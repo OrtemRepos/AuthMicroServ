@@ -1,76 +1,80 @@
 from functools import lru_cache, wraps
 from typing import Protocol, Callable
 from abc import abstractmethod
+from src.core.usecase import UsecaseType
 from src.core.cqrs.command import CommandType
-from src.core.ports import Dependencies
+
+
+type Dependency = tuple[CommandType, UsecaseType]  # type: ignore
 
 
 class CommandHandler(Protocol[CommandType]):
     @abstractmethod
-    async def execute(command: CommandType):
+    async def execute(self, command: CommandType, usecase: UsecaseType) -> None:
         pass
 
 
-class CommandHandlerFactory:
+class CommandHandlerRouter:
     def __init__(self) -> None:
-        self._handlers_factory = dict[
-            tuple[CommandType, Dependencies], Callable[[Dependencies], CommandHandler]
-        ] = {}
+        self._handlers_factory: dict[Dependency, type[CommandHandler]] = {}
 
-    def command_handler(self):
+    def command_handler(self, base_class: type[CommandHandler] = CommandHandler):
         def decorator(
-            func: Callable[[CommandType, Dependencies | None], None],
+            func: Callable[
+                [CommandType, UsecaseType],
+                None,
+            ],
         ):
-            @wraps
-            def wrapper(command: CommandType,
-                        dependencies: Dependencies,
-                        base_class: CommandHandler = CommandHandler):
-                class CommandHandlerImpl(base_class[command]):
-                    def __init__(
-                        self, dependencies: Dependencies | None = dependencies
-                    ):
-                        self.dependencies = dependencies or {}
-                        self.func = func
+            @wraps(func)
+            def wrapper(
+                command_type: CommandType, usecase_type: UsecaseType
+            ) -> type[CommandHandler]:
+                class CommandHandlerImpl(base_class[command_type]):  # type: ignore
+                    def __init__(self, *args, **kwargs):
+                        super().__init__(*args, **kwargs)
 
-                    async def execute(self, command: command):
-                        return await self.func(command, self.dependencies)
+                    async def execute(
+                        self,
+                        command: command_type,  # type: ignore
+                        usecase: usecase_type,  # type: ignore
+                    ) -> None:
+                        func(command, usecase)
 
-                self.register(
-                    command, lambda dependencies: CommandHandlerImpl(dependencies)
-                )
                 return CommandHandlerImpl
 
+            self._register(
+                (
+                    wrapper.__annotations__["command_type"],
+                    wrapper.__annotations__["usecase_type"],
+                ),
+                wrapper(
+                    wrapper.__annotations__["command_type"],
+                    wrapper.__annotations__["usecase_type"],
+                ),
+            )
             return wrapper
 
         return decorator
 
-    def register(
+    def _register(
         self,
-        type_command: type,
-        handler_factory: Callable[[Dependencies], CommandHandler],
+        dependency: Dependency,
+        handler_class: type[CommandHandler],
     ) -> None:
-        self._handlers_factory[type_command] = handler_factory
+        self._handlers_factory[dependency] = handler_class
 
-    def get_handler_factory(
-        self, type_command: CommandType
-    ) -> type[CommandHandler] | None:
-        handler_factory = self._handlers_factory.get(type_command)
-        if handler_factory is None:
-            raise KeyError(f"Handler factory for {type_command=} not exist")
-        return handler_factory
+    def get_handler_class(self, dependency: Dependency) -> type[CommandHandler]:
+        handler_class = self._handlers_factory.get(dependency)
+        if handler_class is None:
+            raise KeyError(f"Handler factory for {dependency=} not exist")
+        return handler_class
 
     @lru_cache()
     def get_handler_object(
-        self, type_command: CommandType, dependencies: Dependencies | None
+        self, dependency: Dependency, *args, **kwargs
     ) -> CommandHandler:
-        if dependencies is None:
-            dependencies = {}
-        from_cache = self._cache.get((type_command, dependencies))
-        if from_cache:
-            return from_cache
-        handler_factory = self.get_handler_factory(type_command)
-        handler_object = handler_factory(dependencies)
-        self._cache[(type_command, dependencies)] = handler_object
+        handler_class = self.get_handler_class(dependency)
+        handler_object = handler_class(*args, **kwargs)
         return handler_object
 
     def reset_cache(self) -> None:

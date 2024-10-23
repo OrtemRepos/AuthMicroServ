@@ -1,10 +1,9 @@
 import socket
 import secrets
 from uuid import UUID
-from typing import TypeVar
 from pydantic import BaseModel, ConfigDict, Field
 
-ID = TypeVar("ID", bound=[UUID | int])
+type ID = UUID | int
 
 
 class ValueObject(BaseModel):
@@ -31,4 +30,4 @@ class TokenPayload(ValueObject):
     sub: str = Field(examples=["user-1", "user-2", "user-3"], description="Subject")
     aud: str = Field(examples=["127.0.0.1"], description="Audience server")
     exp: int = Field(examples=[3600], description="Expiration time in milliseconds")
-    roles: list[any] = Field(examples=["admin", "user"], description="List of roles")
+    roles: set[int] = Field(examples=["admin", "user"], description="List of roles")

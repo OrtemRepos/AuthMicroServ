@@ -1,27 +1,38 @@
 from abc import ABC
+from typing import Protocol
 from src.core.domain.service import AuthService
-from src.core.domain.entities.value_objects import AccsesToken, RefreshToken
+from src.core.dto import AuthTokenDTO, UserAuthDTO, UserRefreshTokenUpdatedDTO
 
 
-class BaseAuthUsecase(ABC):
+class BaseAuthUsecaseInterface(Protocol):
+    def __init__(self, auth_service: AuthService) -> None:
+        pass
+
+
+class BaseAuthUsecase(ABC, BaseAuthUsecaseInterface):
     def __init__(self, auth_service: AuthService) -> None:
         self.auth_service = auth_service
 
 
 class AuthUserWithPassword(BaseAuthUsecase):
-    def __call__(self, email: str, password: str, aud: str):
-        return self.auth_service.auth_user_with_password_and_email(email, password, aud)
+    async def __call__(self, auth: UserAuthDTO) -> AuthTokenDTO:
+        dto = await self.auth_service.auth_user_with_password_and_email(
+            auth.email, auth.password.get_secret_value(), auth.aud.aud
+        )
+        return AuthTokenDTO.model_validate(dto)
 
 
 class AuthUserWithRefreshToken(BaseAuthUsecase):
-    def __call__(self, accses_token: AccsesToken, refresh_token: RefreshToken):
-        return self.auth_service.auth_user_with_refresh_token(
-            accses_token, refresh_token
+    async def __call__(self, auth: AuthTokenDTO):
+        dto = await self.auth_service.auth_user_with_refresh_token(
+            auth.accsess_token, auth.refresh_token
         )
+        return AuthTokenDTO.model_validate(dto)
 
 
 class AuthUserWithUpdateRole(BaseAuthUsecase):
-    def __call__(self, accses_token: AccsesToken, refresh_token: RefreshToken):
-        return self.auth_service.update_token_with_refresh_token(
-            accses_token, refresh_token
+    async def __call__(self, auth: UserRefreshTokenUpdatedDTO):
+        dto = await self.auth_service.update_token_with_refresh_token(
+            auth.user_id, auth.refresh_token, auth.aud.aud
         )
+        return AuthTokenDTO.model_validate(dto)

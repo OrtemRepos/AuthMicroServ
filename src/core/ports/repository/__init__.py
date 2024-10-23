@@ -14,10 +14,10 @@ QueryRepositoryType = TypeVar(
 )
 
 __all__ = [
-    QueryRepositoryType,
-    CommandRepositoryType,
-    AioCommandRepository,
-    AioQueryRepository,
-    SyncCommandRepository,
-    SyncQueryRepository,
+    "QueryRepositoryType",
+    "CommandRepositoryType",
+    "AioCommandRepository",
+    "AioQueryRepository",
+    "SyncCommandRepository",
+    "SyncQueryRepository",
 ]

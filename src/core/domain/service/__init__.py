@@ -4,4 +4,10 @@ from .role_service import RoleService
 from .auth_service import AuthService
 from .premisson_service import PremissionService
 
-__all__ = [UserService, TokenService, RoleService, AuthService, PremissionService]
+__all__ = [
+    "UserService",
+    "TokenService",
+    "RoleService",
+    "AuthService",
+    "PremissionService",
+]

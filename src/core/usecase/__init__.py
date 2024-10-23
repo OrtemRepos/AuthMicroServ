@@ -1,12 +1,14 @@
-from typing import TypeVar
+from typing import TypeVar, Union
 
 from .authenticate_usecase import (
+    BaseAuthUsecaseInterface,
     BaseAuthUsecase,
     AuthUserWithPassword,
     AuthUserWithRefreshToken,
     AuthUserWithUpdateRole,
 )
 from .user_usecase import (
+    BaseUserUsecaseInterface,
     BaseUserUsecase,
     CreateUserUsecase,
     DeleteUserUsecase,
@@ -14,6 +16,7 @@ from .user_usecase import (
     GetUserUsecase,
 )
 from .role_usecase import (
+    BaseRoleUsecaseInterface,
     BaseRoleUsecase,
     CreateRoleUsecase,
     DeleteRoleUsecase,
@@ -21,11 +24,23 @@ from .role_usecase import (
     GetRoleUsecase,
 )
 from .premission_usecase import (
+    BasePremissionUsecaseInterface,
     BasePremissionUsecase,
     CreatePremissionUsecase,
     DeletePremissionUsecase,
     UpdatePremissionUsecase,
     GetPremissionUsecase,
+)
+
+UsecaseType = TypeVar(
+    "UsecaseType",
+    bound=Union[
+        BasePremissionUsecaseInterface,
+        BaseAuthUsecaseInterface,
+        BaseUserUsecaseInterface,
+        BaseRoleUsecaseInterface,
+    ],
+    contravariant=True,
 )
 
 AuthenticateUsecase = TypeVar(
@@ -39,27 +54,27 @@ PremissionUsecase = TypeVar(
 
 
 __all__ = [
-    BaseAuthUsecase,
-    AuthUserWithPassword,
-    AuthUserWithRefreshToken,
-    AuthUserWithUpdateRole,
-    AuthenticateUsecase,
-    BaseUserUsecase,
-    CreateUserUsecase,
-    DeleteUserUsecase,
-    UpdateUserUsecase,
-    GetUserUsecase,
-    UserUsecase,
-    BaseRoleUsecase,
-    CreateRoleUsecase,
-    DeleteRoleUsecase,
-    UpdateRoleUsecase,
-    GetRoleUsecase,
-    RoleUsecase,
-    BasePremissionUsecase,
-    CreatePremissionUsecase,
-    DeletePremissionUsecase,
-    UpdatePremissionUsecase,
-    GetPremissionUsecase,
-    PremissionUsecase,
+    "BaseAuthUsecase",
+    "AuthUserWithPassword",
+    "AuthUserWithRefreshToken",
+    "AuthUserWithUpdateRole",
+    "AuthenticateUsecase",
+    "BaseUserUsecase",
+    "CreateUserUsecase",
+    "DeleteUserUsecase",
+    "UpdateUserUsecase",
+    "GetUserUsecase",
+    "UserUsecase",
+    "BaseRoleUsecase",
+    "CreateRoleUsecase",
+    "DeleteRoleUsecase",
+    "UpdateRoleUsecase",
+    "GetRoleUsecase",
+    "RoleUsecase",
+    "BasePremissionUsecase",
+    "CreatePremissionUsecase",
+    "DeletePremissionUsecase",
+    "UpdatePremissionUsecase",
+    "GetPremissionUsecase",
+    "PremissionUsecase",
 ]

@@ -1,13 +1,24 @@
-from src.core.ports import Dependencies
-from src.core.ports.command import CommandHandlerFactory
-from src.core.cqrs.command import CreateCommand
-from src.core.usecase.user_usecase import CreateUserUsecase
+from src.core.ports.command import CommandHandlerRouter
+from src.core.cqrs.command import CreateCommand, UpdateCommand, DeleteCommand
+from src.core.usecase import UsecaseType
 
-command_router = CommandHandlerFactory()
+command_router = CommandHandlerRouter()
 
-dep: Dependencies = {
-    "usecase": CreateUserUsecase
-}
+
 @command_router.command_handler()
-async def handle_create_user(type_command=CreateCommand(), dependencies=dep):
-    dependencies["usecase"]()
+async def handle_create(command_type: CreateCommand, usecase_type: UsecaseType):
+    await usecase_type(command_type.dto)  # type: ignore
+
+
+@command_router.command_handler()
+async def handle_update(command_type: UpdateCommand, usecase_type: UsecaseType):
+    await usecase_type(command_type.id, command_type.dto)  # type: ignore
+
+
+@command_router.command_handler()
+async def handle_delete(command_type: DeleteCommand, usecase_type: UsecaseType):
+    await usecase_type(command_type.id)  # type: ignore
+
+
+for i, k in command_router._handlers_factory.items():
+    print(f"{i} - {k}")

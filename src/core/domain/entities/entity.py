@@ -1,6 +1,6 @@
-from abc import ABC
 from src.core.domain.entities.value_objects import ID
+from pydantic import BaseModel
 
 
-class Entity(ABC[ID]):
+class Entity(BaseModel):
     id: ID

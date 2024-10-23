@@ -1,10 +1,9 @@
-from uuid import UUID
 from pydantic import EmailStr
 
 from src.core.domain.entities.entity import Entity
 
 
-class User(Entity[UUID]):
+class User(Entity):
     email: EmailStr
-    hash_password: str
+    hashed_password: str
     role_ids: set[int]

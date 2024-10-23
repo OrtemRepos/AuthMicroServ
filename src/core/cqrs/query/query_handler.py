@@ -1,11 +1,11 @@
-from src.core.ports.query.query import QueryHandlerFactory
-from src.core.domain.entities.aggregates.user_aggregate import UserAggregate
-from src.core.domain.cqrs.query import GetByIdQuery
+from src.core.ports.query import QueryHandlerRouter
+from src.core.cqrs.query import GetByIdQuery
+from src.core.usecase import UsecaseType
 
 
-factory = QueryHandlerFactory()
+factory = QueryHandlerRouter()
 
 
 @factory.query_handler()
-async def get_by_id(type_query: GetByIdQuery, domain_entity: UserAggregate):
-    pass
+async def get_by_id(query_type: GetByIdQuery, usecase_type: UsecaseType):
+    return await usecase_type(query_type.dto)  # type: ignore

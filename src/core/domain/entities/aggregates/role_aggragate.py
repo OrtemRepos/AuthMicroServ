@@ -1,9 +1,9 @@
-from src.core.domain.entities.role import Role
+from src.core.domain.entities import Role
 from src.core.domain.entities.aggregates import BaseAggregate
-from src.core.dto import RoleFullDTO
+from src.core.dto.role import RoleFullDTO
 
 
-class RoleAggregate(BaseAggregate[RoleFullDTO]):
+class RoleAggregate(BaseAggregate):
     def __init__(self, role: Role):
         self.role_id = role.id
         self.name = role.name
@@ -11,14 +11,16 @@ class RoleAggregate(BaseAggregate[RoleFullDTO]):
 
     def role_validate(self, role: RoleFullDTO) -> bool:
         validate_predicate = (
-            self.role_id == role.role_id
+            True
+            if self.role_id == role.role_id
             and self.name == role.name
             and self.premission_ids
+            else False
         )
         return validate_predicate
 
     def add_premission(self, premission_id: int):
-        self.premission_ids.append(premission_id)
+        self.premission_ids.add(premission_id)
 
     def remove_premission(self, premission_id: int):
         self.premission_ids.remove(premission_id)

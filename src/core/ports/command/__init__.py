@@ -1,3 +1,3 @@
-from .command import CommandHandler, CommandHandlerFactory, Dependencies
+from .command import CommandHandler, CommandHandlerRouter
 
-__all__ = [CommandHandler, CommandHandlerFactory, Dependencies]
+__all__ = ["CommandHandler", "CommandHandlerRouter"]

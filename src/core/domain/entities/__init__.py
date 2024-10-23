@@ -9,9 +9,8 @@ from .aggregates import BaseAggregate
 
 EntityType = TypeVar("EntityType", bound=Entity, covariant=True)
 ValueType = TypeVar("ValueType", bound=ValueObject, covariant=True)
+AggregateType = TypeVar("AggregateType", bound=BaseAggregate, covariant=True)
 
-DomainEntityType = TypeVar(
-    "DomainEntityType", bound=Union[Entity, ValueObject, BaseAggregate]
-)
+type DomainEntityType = Union[EntityType, ValueType, AggregateType]  # type: ignore
 
-__all__ = [Entity, Premission, Role, User]
+__all__ = ["Entity", "Premission", "Role", "User"]

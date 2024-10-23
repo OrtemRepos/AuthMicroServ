@@ -1,34 +1,36 @@
-from typing import Protocol
+from typing import Any, Protocol, TypeVar
 from abc import ABC, abstractmethod
 
-from src.core.domain.entities import EntityType
-from src.core.dto import FullDTO, DTOType
+from pydantic import BaseModel
 
 
-class Aggregate(Protocol[FullDTO, EntityType]):
+EntityType = TypeVar("EntityType", bound=BaseModel, contravariant=True)
+
+
+class Aggregate(Protocol):
     @classmethod
     @abstractmethod
-    def from_dto(cls: "Aggregate", dto: FullDTO) -> "Aggregate":
+    def from_dto(cls: "Aggregate", dto: Any) -> "Aggregate":
         pass
 
     @classmethod
     @abstractmethod
     def from_entity(cls: "Aggregate", entity: EntityType) -> "Aggregate":
-        return cls(**entity.model_dump())
+        pass
 
     @abstractmethod
-    def to_dto(self, dto_type: DTOType) -> DTOType:
+    def to_dto(self, dto_type: Any) -> Any:
         pass
 
 
-class BaseAggregate(Protocol[FullDTO, EntityType], ABC):
+class BaseAggregate(ABC):
     @classmethod
-    def from_dto(cls, dto: FullDTO) -> "BaseAggregate":
+    def from_dto(cls, dto: Any) -> "BaseAggregate":
         return cls(**dto)
 
     @classmethod
     def from_entity(cls, entity: EntityType) -> "BaseAggregate":
-        cls(**entity.__dict__)
+        return cls(**entity.__dict__)
 
-    def to_dto(self, dto_type: DTOType) -> DTOType:
+    def to_dto(self, dto_type: Any) -> Any:
         return dto_type.model_validate(self, from_attributes=True)

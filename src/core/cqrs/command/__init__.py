@@ -5,9 +5,8 @@ from .command import (
     CreateCommand,
     UpdateCommand,
     DeleteCommand,
-    RefreshToken,
 )
 
-CommandType = TypeVar("CommandType", bound=BaseCommand, covariant=True)
+CommandType = TypeVar("CommandType", bound=BaseCommand, contravariant=True)
 
-__all__ = [BaseCommand, CreateCommand, UpdateCommand, DeleteCommand, RefreshToken]
+__all__ = ["CreateCommand", "UpdateCommand", "DeleteCommand"]

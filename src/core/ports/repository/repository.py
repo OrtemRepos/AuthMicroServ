@@ -5,49 +5,49 @@ from src.core.domain.entities import DomainEntityType
 from src.core.domain.entities.value_objects import ID
 
 
-class SyncQueryRepository(Protocol[DomainEntityType]):
+class SyncQueryRepository(Protocol):
     @abstractmethod
-    def get_by_id(entity_id: ID) -> DomainEntityType:
+    def get_by_id(self, entity_id: ID) -> DomainEntityType:
         pass
 
     @abstractmethod
-    def get_by_name(name: str) -> DomainEntityType:
+    def get_by_name(self, name: str) -> DomainEntityType:
         pass
 
 
-class AioQueryRepository(Protocol[DomainEntityType]):
+class AioQueryRepository(Protocol):
     @abstractmethod
-    async def get_by_id(entity_id: ID) -> DomainEntityType:
+    async def get_by_id(self, entity_id: ID) -> DomainEntityType:
         pass
 
     @abstractmethod
-    async def get_by_name(name: str) -> DomainEntityType:
+    async def get_by_name(self, name: str) -> DomainEntityType:
         pass
 
 
-class SyncCommandRepository(Protocol[DomainEntityType]):
+class SyncCommandRepository(Protocol):
     @abstractmethod
-    def add(entity: DomainEntityType):
+    def add(self, entity: DomainEntityType):
         pass
 
     @abstractmethod
-    def update(updated_entity: DomainEntityType):
+    def update(self, updated_entity: DomainEntityType):
         pass
 
     @abstractmethod
-    def delete(entity: DomainEntityType):
+    def delete(self, entity_id: ID):
         pass
 
 
-class AioCommandRepository(Protocol[DomainEntityType]):
+class AioCommandRepository(Protocol):
     @abstractmethod
-    async def add(entity: DomainEntityType):
+    async def add(self, entity: DomainEntityType):
         pass
 
     @abstractmethod
-    async def update(updated_entity: DomainEntityType):
+    async def update(self, updated_entity: DomainEntityType):
         pass
 
     @abstractmethod
-    async def delete(entity: DomainEntityType):
+    async def delete(self, entity_id: ID):
         pass

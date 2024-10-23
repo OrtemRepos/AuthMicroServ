@@ -1,3 +1,4 @@
+from typing import Coroutine, Any
 from src.core.domain.service.token_service import TokenService
 from src.core.domain.service.user_service import UserService
 
@@ -13,32 +14,36 @@ class AuthService:
         self, email: str, password: str, aud: str
     ) -> tuple[AccsesToken, RefreshToken]:
         user = await self.user_service.get_auth_user(email=email, password=password)
-        if user:
-            refresh_token = await self.token_service.create_refresh_token(
-                user_id=user.entity.id
-            )
-            accses_token = self.token_service.create_accses_token(
-                user_id=user.entity.id, aud=aud
-            )
-            return accses_token, refresh_token
+        refresh_token = await self.token_service.create_refresh_token(
+            user_id=user.user_id
+        )
+        accses_token = self.token_service.create_accses_token(
+            user_id=user.user_id, aud=aud, role_ids=user.role_ids
+        )
+        return accses_token, refresh_token
 
     async def auth_user_with_refresh_token(
         self, accses_token, refresh_token: RefreshToken
-    ) -> tuple[AccsesToken, RefreshToken]:
-        return await self.token_service.refresh_accses_token(
-            accses_token=accses_token, refresh_token=refresh_token
+    ) -> tuple[AccsesToken, Coroutine[Any, Any, RefreshToken]]:
+        server_refresh_token = await self.token_service.get_refresh_token_by_token(
+            refresh_token
         )
+        if server_refresh_token:
+            return await self.token_service.refresh_accses_token(
+                accses_token=accses_token
+            )
+        raise ValueError(f"{refresh_token=} not valid")
 
     async def update_token_with_refresh_token(
-        self, user_id: ID, aud: str, refresh_token: RefreshToken
+        self, user_id: ID, refresh_token: RefreshToken, aud: str
     ) -> tuple[AccsesToken, RefreshToken]:
-        user = self.user_service.get_user_by_id(user_id)
-        payload = self.token_service.create_accses_token(user_id, aud, user.role_ids)
+        user = await self.user_service.get_user_by_id(user_id)
         if user:
             refresh_token = await self.token_service.create_refresh_token(
-                user_id=user.entity.id
+                user_id=user.user_id
             )
             accses_token = self.token_service.create_accses_token(
-                user_id=user.entity.id, aud=payload.aud
+                user_id=user.user_id, aud=aud, role_ids=user.role_ids
             )
             return accses_token, refresh_token
+        raise ValueError(f"Not valid {user_id=}")

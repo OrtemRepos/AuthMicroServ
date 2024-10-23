@@ -7,4 +7,4 @@ from .user_aggregate import UserAggregate
 AggregateType = TypeVar("AggregateType", bound=BaseAggregate, covariant=True)
 
 
-__all__ = [BaseAggregate, RoleAggregate, UserAggregate]
+__all__ = ["BaseAggregate", "RoleAggregate", "UserAggregate"]

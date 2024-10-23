@@ -6,6 +6,7 @@ from uuid import UUID
 from time import time
 from src.config import JWTsettings
 from src.core.domain.entities.value_objects import (
+    ID,
     AccsesToken,
     TokenPayload,
     RefreshToken,
@@ -16,9 +17,7 @@ class TokenProviderInterface(Protocol):
     settings: JWTsettings
 
     @abstractmethod
-    def generate_token(
-        self, user_id: UUID, aud: str, role_ids: list[int]
-    ) -> AccsesToken:
+    def generate_token(self, user_id: ID, aud: str, role_ids: set[int]) -> AccsesToken:
         pass
 
     @abstractmethod
@@ -35,7 +34,7 @@ class TokenProvider:
         self.settings: JWTsettings = settings
 
     def _generate_payload(
-        self, user_id: UUID, aud: str, role_ids: list[int]
+        self, user_id: UUID, aud: str, role_ids: set[int]
     ) -> TokenPayload:
         payload = TokenPayload(
             sub=str(user_id),
@@ -46,10 +45,10 @@ class TokenProvider:
         return payload
 
     def generate_token(
-        self, user_id: UUID, aud: str, role_ids: list[int]
+        self, user_id: UUID, aud: str, role_ids: set[int]
     ) -> AccsesToken:
         token = jwt.encode(
-            payload=self._generate_payload(user_id, aud, role_ids),
+            payload=self._generate_payload(user_id, aud, role_ids).model_dump(),
             key=self.settings.secret_key,
             algorithm=self.settings.algorithms[0],
         )
@@ -62,7 +61,9 @@ class TokenProvider:
 
     def decode(self, token: AccsesToken) -> TokenPayload:
         decode = jwt.decode(
-            jwt=token, key=self.settings.secret_key, algorithms=self.settings.algorithms
+            jwt=token.value,
+            key=self.settings.secret_key,
+            algorithms=self.settings.algorithms,
         )
         payload = TokenPayload(**decode)
         return payload

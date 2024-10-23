@@ -24,8 +24,13 @@ class UserFullDTO(
     pass
 
 
+class AudDTO(BaseModel):
+    aud: str
+
+
 class UserAuthDTO(UserBaseEmailDTO):
     password: SecretStr
+    aud: AudDTO
 
 
 class UserUpdateDTO(UserBaseEmailDTO, UserBaseRoleDTO, UserBasePasswordDTO):
@@ -36,5 +41,10 @@ class UserAuthWithTokenDTO(UserBaseIdDTO):
     accses_token: AccsesToken
 
 
-class UserRefreshTokenDTO(UserBaseIdDTO):
+class UserRefreshTokenUpdatedDTO(UserBaseIdDTO):
+    refresh_token: RefreshToken
+    aud: AudDTO
+
+
+class UserRefreshTokenDTO(UserAuthWithTokenDTO):
     refresh_token: RefreshToken

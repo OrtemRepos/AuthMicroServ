@@ -1,6 +1,12 @@
 from pydantic import BaseModel, Field
 
-from src.core.dto import UpdateDTO, IdDTO, FullDTO
+from typing import Any
+
+from src.core.dto import (
+    UserAuthDTO,
+    UserAuthWithTokenDTO,
+    UserRefreshTokenDTO,
+)
 
 
 class BaseCommand(BaseModel):
@@ -15,17 +21,25 @@ class BaseCommand(BaseModel):
 
 
 class CreateCommand(BaseCommand):
-    dto: FullDTO = Field(description="DTO of new entity")
+    dto: Any = Field(description="DTO of new entity")
 
 
 class UpdateCommand(BaseCommand):
-    id: IdDTO
-    dto: UpdateDTO
+    id: Any
+    dto: Any
 
 
 class DeleteCommand(BaseCommand):
-    id: IdDTO
+    id: Any
 
 
-class RefreshToken(BaseModel):
-    pass
+class AuthWithPasswordCommand(BaseCommand):
+    dto: UserAuthDTO
+
+
+class AuthWithTokenCommand(BaseCommand):
+    dto: UserAuthWithTokenDTO
+
+
+class AuthWithRefreshCommand(BaseCommand):
+    dto: UserRefreshTokenDTO

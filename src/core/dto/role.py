@@ -1,14 +1,12 @@
 from pydantic import BaseModel
 
-from src.core.domain.entities.value_objects import ID
-
 
 class RoleBaseIdDTO(BaseModel):
-    role_id: ID
+    role_id: int
 
 
 class RolePremissionBaseDTO(BaseModel):
-    premission_ids: set[ID]
+    premission_ids: set[int]
 
 
 class RoleBaseNameDTO(BaseModel):

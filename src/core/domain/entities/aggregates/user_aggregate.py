@@ -2,18 +2,17 @@ import bcrypt
 
 from src.core.domain.entities.user import User
 from src.core.domain.entities.aggregates import BaseAggregate
-from src.core.dto import UserFullDTO
 
 
-class UserAggregate(BaseAggregate[UserFullDTO, User]):
+class UserAggregate(BaseAggregate):
     def __init__(self, user: User):
         self.user_id = user.id
         self.email = user.email
-        self.hashed_password = user.hash_password
+        self.hashed_password = user.hashed_password
         self.role_ids = user.role_ids
 
     def add_role(self, role_id: int):
-        self.role_ids.append(role_id)
+        self.role_ids.add(role_id)
 
     def remove_role(self, role_id: int):
         self.role_ids.remove(role_id)

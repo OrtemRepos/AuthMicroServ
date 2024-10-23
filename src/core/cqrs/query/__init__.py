@@ -9,13 +9,13 @@ from .query import (
     CheckRoleQuery,
 )
 
-QueryType = TypeVar("QueryType", bound=BaseQuery, covariant=True)
+QueryType = TypeVar("QueryType", bound=BaseQuery, contravariant=True)
 
 __all__ = [
-    BaseQuery,
-    GetByIdQuery,
-    GetByNameQuery,
-    CheckAccsesTokenQuery,
-    CheckPremissionQuery,
-    CheckRoleQuery,
+    "BaseQuery",
+    "GetByIdQuery",
+    "GetByNameQuery",
+    "CheckAccsesTokenQuery",
+    "CheckPremissionQuery",
+    "CheckRoleQuery",
 ]
