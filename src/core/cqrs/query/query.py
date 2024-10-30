@@ -1,38 +1,37 @@
-from typing import Any, Generic
-from pydantic import BaseModel, Field
-from src.core.domain.entities.value_objects import ID, AccsesToken
-from src.core.dto import DTOTypeCovariant
+from abc import ABC
+from pydantic import BaseModel
+from typing import TypeVar, Generic
+from src.core.dto import (
+    NameDTO,
+    IdDTO,
+    UserAuthDTO,
+    AuthTokenDTO,
+    UserRefreshTokenUpdatedDTO,
+)
+
+NameT = TypeVar("NameT", bound=NameDTO)
+IdT = TypeVar("IdT", bound=IdDTO)
 
 
-class BaseQuery(BaseModel, Generic[DTOTypeCovariant]):
-    name: str = Field(
-        examples=["SomeQueryName"], description="Query name", default=None
-    )
-    dto_type: Any
-
-    def __init__(self, **data):
-        super().__init__(**data)
-        if not self.name:
-            self.name = self.__class__.__name__
+class BaseQuery(BaseModel, ABC):
+    pass
 
 
-class GetByIdQuery(BaseQuery):
-    id: ID
+class GetByIdQuery(BaseQuery, Generic[IdT]):
+    dto: IdT
 
 
-class GetByNameQuery(BaseQuery):
-    name: str
+class GetByNameQuery(BaseQuery, Generic[NameT]):
+    dto: NameT
 
 
-class CheckAccsesTokenQuery(BaseQuery):
-    token: AccsesToken
+class AuthWithPasswordQuery(BaseQuery):
+    dto: UserAuthDTO
 
 
-class CheckRoleQuery(BaseQuery):
-    user_id: ID
-    role_id: int
+class AuthWithRefreshTokenQuery(BaseQuery):
+    dto: AuthTokenDTO
 
 
-class CheckPremissionQuery(BaseQuery):
-    role_id: ID
-    premission_id: int
+class AuthWithUpdateTokenQuery(BaseQuery):
+    dto: UserRefreshTokenUpdatedDTO

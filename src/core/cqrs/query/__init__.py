@@ -4,9 +4,9 @@ from .query import (
     BaseQuery,
     GetByIdQuery,
     GetByNameQuery,
-    CheckAccsesTokenQuery,
-    CheckPremissionQuery,
-    CheckRoleQuery,
+    AuthWithPasswordQuery,
+    AuthWithUpdateTokenQuery,
+    AuthWithRefreshTokenQuery,
 )
 
 QueryType = TypeVar("QueryType", bound=BaseQuery, contravariant=True)
@@ -18,4 +18,7 @@ __all__ = [
     "CheckAccsesTokenQuery",
     "CheckPremissionQuery",
     "CheckRoleQuery",
+    "AuthWithPasswordQuery",
+    "AuthWithUpdateTokenQuery",
+    "AuthWithRefreshTokenQuery",
 ]

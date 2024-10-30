@@ -1,8 +1,9 @@
 from typing import Coroutine, Any
 from src.core.domain.service.token_service import TokenService
 from src.core.domain.service.user_service import UserService
+from src.core.domain.entities import RefreshToken
 
-from src.core.domain.entities.value_objects import ID, AccsesToken, RefreshToken
+from src.core.domain.entities.value_objects import ID, AccsesToken
 
 
 class AuthService:

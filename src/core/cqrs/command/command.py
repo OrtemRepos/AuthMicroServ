@@ -1,45 +1,25 @@
 from pydantic import BaseModel, Field
+from typing import TypeVar, Generic
+from abc import ABC
 
-from typing import Any
+from src.core.dto import UpdateDTO, IdDTO, CreateDTO
 
-from src.core.dto import (
-    UserAuthDTO,
-    UserAuthWithTokenDTO,
-    UserRefreshTokenDTO,
-)
-
-
-class BaseCommand(BaseModel):
-    name: str = Field(
-        examples=["Some-Command-Name"], description="Command name", default=None
-    )
-
-    def __init__(self, **data):
-        super().__init__(**data)
-        if not self.name:
-            self.name = self.__class__.__name__
+CreateT = TypeVar("CreateT", bound=CreateDTO)
+UpdateT = TypeVar("UpdateT", bound=UpdateDTO)
+DeleteT = TypeVar("DeleteT", bound=IdDTO)
 
 
-class CreateCommand(BaseCommand):
-    dto: Any = Field(description="DTO of new entity")
+class BaseCommand(BaseModel, ABC):
+    pass
 
 
-class UpdateCommand(BaseCommand):
-    id: Any
-    dto: Any
+class CreateCommand(BaseCommand, Generic[CreateT]):
+    dto: CreateT = Field(description="DTO of new entity")
 
 
-class DeleteCommand(BaseCommand):
-    id: Any
+class UpdateCommand(BaseCommand, Generic[UpdateT]):
+    dto: UpdateT
 
 
-class AuthWithPasswordCommand(BaseCommand):
-    dto: UserAuthDTO
-
-
-class AuthWithTokenCommand(BaseCommand):
-    dto: UserAuthWithTokenDTO
-
-
-class AuthWithRefreshCommand(BaseCommand):
-    dto: UserRefreshTokenDTO
+class DeleteCommand(BaseCommand, Generic[DeleteT]):
+    dto: DeleteT

@@ -1,5 +1,4 @@
 import socket
-import secrets
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -12,13 +11,6 @@ class ValueObject(BaseModel):
 
 class AccsesToken(ValueObject):
     value: str = Field(examples=["JWT token"], description="Accses Token jwt")
-
-
-class RefreshToken(ValueObject):
-    value: str = Field(
-        description="Refresh Token",
-        examples=[f"{secrets.token_urlsafe(5)}"],
-    )
 
 
 class TokenPayload(ValueObject):

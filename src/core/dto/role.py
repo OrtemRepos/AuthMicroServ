@@ -17,5 +17,9 @@ class RoleFullDTO(RoleBaseIdDTO, RolePremissionBaseDTO, RoleBaseNameDTO):
     pass
 
 
-class RoleUpdateDTO(RolePremissionBaseDTO, RoleBaseNameDTO):
+class RoleCreateDTO(RolePremissionBaseDTO, RoleBaseNameDTO):
+    pass
+
+
+class RoleUpdateDTO(RoleFullDTO):
     pass

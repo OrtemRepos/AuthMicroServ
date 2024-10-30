@@ -1,14 +1,13 @@
-from typing import TypeVar, Union
+from typing import TypeVar
+from collections.abc import Callable
 
 from .authenticate_usecase import (
-    BaseAuthUsecaseInterface,
     BaseAuthUsecase,
     AuthUserWithPassword,
-    AuthUserWithRefreshToken,
-    AuthUserWithUpdateRole,
+    AuthUserWithRefreshTokenUsecase,
+    AuthUserWithUpdateRoleUsecase,
 )
 from .user_usecase import (
-    BaseUserUsecaseInterface,
     BaseUserUsecase,
     CreateUserUsecase,
     DeleteUserUsecase,
@@ -16,7 +15,6 @@ from .user_usecase import (
     GetUserUsecase,
 )
 from .role_usecase import (
-    BaseRoleUsecaseInterface,
     BaseRoleUsecase,
     CreateRoleUsecase,
     DeleteRoleUsecase,
@@ -24,7 +22,6 @@ from .role_usecase import (
     GetRoleUsecase,
 )
 from .premission_usecase import (
-    BasePremissionUsecaseInterface,
     BasePremissionUsecase,
     CreatePremissionUsecase,
     DeletePremissionUsecase,
@@ -34,12 +31,7 @@ from .premission_usecase import (
 
 UsecaseType = TypeVar(
     "UsecaseType",
-    bound=Union[
-        BasePremissionUsecaseInterface,
-        BaseAuthUsecaseInterface,
-        BaseUserUsecaseInterface,
-        BaseRoleUsecaseInterface,
-    ],
+    bound=Callable,
     contravariant=True,
 )
 
@@ -56,8 +48,8 @@ PremissionUsecase = TypeVar(
 __all__ = [
     "BaseAuthUsecase",
     "AuthUserWithPassword",
-    "AuthUserWithRefreshToken",
-    "AuthUserWithUpdateRole",
+    "AuthUserWithRefreshTokenUsecase",
+    "AuthUserWithUpdateRoleUsecase",
     "AuthenticateUsecase",
     "BaseUserUsecase",
     "CreateUserUsecase",

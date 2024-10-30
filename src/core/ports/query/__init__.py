@@ -1,3 +1,3 @@
-from .query import QueryHandlerRouter, QueryHandler
+from ....infrastructure.query import QueryRouter
 
-__all__ = ["QueryHandlerRouter", "QueryHandler"]
+__all__ = ["QueryRouter"]

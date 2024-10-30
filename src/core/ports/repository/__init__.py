@@ -1,4 +1,3 @@
-from typing import TypeVar
 from .repository import (
     AioCommandRepository,
     AioQueryRepository,
@@ -6,12 +5,9 @@ from .repository import (
     SyncQueryRepository,
 )
 
-CommandRepositoryType = TypeVar(
-    "CommandRepositoryType", bound=SyncCommandRepository | AioCommandRepository
-)
-QueryRepositoryType = TypeVar(
-    "QueryRepositoryType", bound=SyncQueryRepository | AioQueryRepository
-)
+
+type CommandRepositoryType[T] = SyncCommandRepository[T] | AioCommandRepository[T]
+type QueryRepositoryType[T] = SyncQueryRepository[T] | AioQueryRepository[T]
 
 __all__ = [
     "QueryRepositoryType",

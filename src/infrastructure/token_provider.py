@@ -9,8 +9,8 @@ from src.core.domain.entities.value_objects import (
     ID,
     AccsesToken,
     TokenPayload,
-    RefreshToken,
 )
+from src.core.domain.entities import RefreshToken
 
 
 class TokenProviderInterface(Protocol):
@@ -21,7 +21,7 @@ class TokenProviderInterface(Protocol):
         pass
 
     @abstractmethod
-    def generate_refresh_token(self) -> RefreshToken:
+    def generate_refresh_token(self, user_id: ID) -> RefreshToken:
         pass
 
     @abstractmethod
@@ -54,9 +54,9 @@ class TokenProvider:
         )
         return AccsesToken(value=token)
 
-    def generate_refresh_token(self) -> RefreshToken:
+    def generate_refresh_token(self, user_id: ID) -> RefreshToken:
         return RefreshToken(
-            value=secrets.token_urlsafe(self.settings.refresh_token_size)
+            id=user_id, token=secrets.token_urlsafe(self.settings.refresh_token_size)
         )
 
     def decode(self, token: AccsesToken) -> TokenPayload:

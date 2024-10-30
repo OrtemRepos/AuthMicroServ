@@ -7,18 +7,21 @@ from src.infrastructure.executor import ExecutorInterface
 class UserService:
     def __init__(
         self,
-        user_query_repository: QueryRepositoryType,
-        user_command_repository: CommandRepositoryType,
-        executor: ExecutorInterface,
+        user_query_repository: QueryRepositoryType[UserAggregate],
+        user_command_repository: CommandRepositoryType[UserAggregate],
+        executor: ExecutorInterface[UserAggregate],
     ) -> None:
         self.user_query_repository = user_query_repository
         self.user_command_repository = user_command_repository
         self.executor = executor
 
-    async def get_user_by_id(self, user_id: ID) -> UserAggregate | None:
-        return await self.executor.execute(
+    async def get_user_by_id(self, user_id: ID) -> UserAggregate:
+        result = await self.executor.execute(
             self.user_query_repository.get_by_id, user_id
         )
+        if result:
+            return result
+        raise ValueError(f"User with {user_id=} not found")
 
     async def get_user_by_email(self, email: str) -> UserAggregate:
         user = await self.executor.execute(
@@ -28,8 +31,7 @@ class UserService:
             return user
         raise ValueError(f"User with {email=} not found")
 
-    async def update_user(self, user_id: ID, user_aggregate: UserAggregate) -> None:
-        user_aggregate.user_id = user_id
+    async def update_user(self, user_aggregate: UserAggregate) -> None:
         await self.executor.execute(
             self.user_command_repository.update,
             user_aggregate,

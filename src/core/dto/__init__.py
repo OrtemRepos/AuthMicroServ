@@ -20,6 +20,7 @@ from .role import (
     RoleBaseNameDTO,
     RoleUpdateDTO,
     RoleFullDTO,
+    RoleCreateDTO,
 )
 
 from .premission import (
@@ -27,12 +28,19 @@ from .premission import (
     PremissionBaseNameDTO,
     PremissionUpdateDTO,
     PremissionFullDTO,
+    PremissionCreateDTO,
 )
 
 from .token import AuthTokenDTO
 
 
 DTOTypeCovariant = TypeVar("DTOTypeCovariant", bound=BaseModel, covariant=True)
+
+type NameDTO = UserBaseEmailDTO | RoleBaseNameDTO | PremissionBaseNameDTO
+type FullDTO = UserFullDTO | RoleFullDTO | PremissionFullDTO
+type CreateDTO = UserFullDTO | RoleCreateDTO | PremissionCreateDTO
+type IdDTO = UserBaseIdDTO | RoleBaseIdDTO | PremissionBaseIdDTO
+type UpdateDTO = UserUpdateDTO | RoleUpdateDTO | PremissionUpdateDTO
 
 __all__ = [
     "UserBaseIdDTO",

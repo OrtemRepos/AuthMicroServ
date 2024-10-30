@@ -1,0 +1,68 @@
+from typing import get_type_hints, TypeVar, Generic, Protocol
+from collections.abc import Callable
+from src.core.cqrs.query import QueryType
+from pydantic import BaseModel
+
+
+TDtoInput = TypeVar("TDtoInput", bound=BaseModel, contravariant=True)
+TDtoOut = TypeVar("TDtoOut", bound=BaseModel, covariant=True)
+type DTO = BaseModel
+
+
+class Handler(Protocol[TDtoOut, TDtoInput]):
+    def __call__(self, dto: TDtoInput) -> TDtoOut:
+        pass
+
+
+HandlerFuncType = Callable[[TDtoInput], TDtoOut] | Handler
+
+
+class QueryRouter(Generic[QueryType, TDtoInput, TDtoOut]):
+    def __init__(self) -> None:
+        self._handlers: dict[QueryType, list[HandlerFuncType]] = {}
+
+    def register(
+        self, handle_query: QueryType, handlers: list[HandlerFuncType]
+    ) -> None:
+        if handle_query not in self._handlers:
+            self._handlers[handle_query] = []
+        self._handlers[handle_query].extend(handlers)
+
+    @staticmethod
+    def check_type(query: QueryType, handler: HandlerFuncType) -> bool:
+        query_items = query.__dict__
+
+        if callable(handler):
+            usecase_type_hints = get_type_hints(handler)
+        elif hasattr(handler, "__call__"):
+            usecase_type_hints = get_type_hints(handler.__call__)
+        else:
+            raise TypeError(f"Not supporting handler {handler.__class__.__name__}")
+
+        usecase_type_hints.pop("return")
+
+        for k, v in usecase_type_hints.items():
+            try:
+                if isinstance(query_items[k], v):
+                    continue
+            except KeyError:
+                raise TypeError(
+                    "Query dont have requires dto.\n"
+                    f"DTO requires: \n\t{usecase_type_hints.values()}"
+                    f"DTO got: \n\t{list(map(type, query_items.values()))}"
+                )
+            return False
+        return True
+
+    async def execute(self, query: QueryType, dto_output: DTO) -> DTO:
+        handlers = self._handlers.get(query)
+        if handlers is None:
+            raise TypeError(
+                f"Not supporting query {query=}.\n"
+                f"Supporting types: \n\t{self._handlers.keys()}"
+            )
+        for handler in handlers:
+            if self.check_type(query, handler):
+                result: TDtoOut = await handler(query.dto)
+                return dto_output.model_validate(result)
+        raise TypeError(f"Query {query.__class__.__name__} have unsupporting DTO type.")

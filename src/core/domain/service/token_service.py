@@ -3,9 +3,9 @@ from uuid import UUID
 from src.core.domain.entities.value_objects import (
     ID,
     AccsesToken,
-    RefreshToken,
     TokenPayload,
 )
+from src.core.domain.entities import RefreshToken
 from src.infrastructure.token_provider import TokenProviderInterface
 from src.core.ports.repository import QueryRepositoryType, CommandRepositoryType
 from src.infrastructure.executor import ExecutorInterface
@@ -41,17 +41,17 @@ class TokenService:
         raise ValueError(f"Not valid {token=}")
 
     async def set_refresh_token(self, user_id: ID) -> RefreshToken:
-        refresh_token: RefreshToken = self.token_provider.generate_refresh_token()
-        await self.executor.execute(
-            self.token_repository_command.update, user_id, refresh_token
+        refresh_token: RefreshToken = self.token_provider.generate_refresh_token(
+            user_id
         )
+        await self.executor.execute(self.token_repository_command.update, refresh_token)
         return refresh_token
 
     async def create_refresh_token(self, user_id: ID) -> RefreshToken:
-        refresh_token: RefreshToken = self.token_provider.generate_refresh_token()
-        await self.executor.execute(
-            self.token_repository_command.add, user_id, refresh_token
+        refresh_token: RefreshToken = self.token_provider.generate_refresh_token(
+            user_id
         )
+        await self.executor.execute(self.token_repository_command.add, refresh_token)
         return refresh_token
 
     def decode_accses_token(self, token: AccsesToken) -> TokenPayload:

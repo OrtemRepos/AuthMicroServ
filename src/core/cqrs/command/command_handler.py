@@ -1,24 +1,31 @@
-from src.core.ports.command import CommandHandlerRouter
-from src.core.cqrs.command import CreateCommand, UpdateCommand, DeleteCommand
-from src.core.usecase import UsecaseType
+# from src.infrastructure.command import CommandRouter
+# from src.core.cqrs.command import UpdateCommand, DeleteCommand, CreateCommand
+# from src.core.usecase import (
+#     CreateRoleUsecase,
+#     CreateUserUsecase,
+#     CreatePremissionUsecase,
+#     UpdatePremissionUsecase,
+#     UpdateRoleUsecase,
+#     UpdateUserUsecase,
+#     DeletePremissionUsecase,
+#     DeleteRoleUsecase,
+#     DeleteUserUsecase,
+# )
 
-command_router = CommandHandlerRouter()
-
-
-@command_router.command_handler()
-async def handle_create(command_type: CreateCommand, usecase_type: UsecaseType):
-    await usecase_type(command_type.dto)  # type: ignore
-
-
-@command_router.command_handler()
-async def handle_update(command_type: UpdateCommand, usecase_type: UsecaseType):
-    await usecase_type(command_type.id, command_type.dto)  # type: ignore
-
-
-@command_router.command_handler()
-async def handle_delete(command_type: DeleteCommand, usecase_type: UsecaseType):
-    await usecase_type(command_type.id)  # type: ignore
+# router: CommandRouter = CommandRouter()
 
 
-for i, k in command_router._handlers_factory.items():
-    print(f"{i} - {k}")
+# router.register(
+#     handle_command=CreateCommand,
+#     handlers=[CreatePremissionUsecase, CreateRoleUsecase, CreateUserUsecase],
+# )  # type: ignore
+# router.register(
+#     handle_command=UpdateCommand,
+#     handlers=[UpdatePremissionUsecase, UpdateRoleUsecase, UpdateUserUsecase],
+# )  # type: ignore
+# router.register(
+#     handle_command=DeleteCommand,
+#     handlers=[DeletePremissionUsecase, DeleteRoleUsecase, DeleteUserUsecase],
+# )  # type: ignore
+
+# print(router._handlers)

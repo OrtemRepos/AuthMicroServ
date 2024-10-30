@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field, SecretStr
-from src.core.domain.entities.value_objects import ID, AccsesToken, RefreshToken
+from src.core.domain.entities.value_objects import ID, AccsesToken
+from src.core.domain.entities import RefreshToken
 
 
 class UserBaseIdDTO(BaseModel):
@@ -33,7 +34,9 @@ class UserAuthDTO(UserBaseEmailDTO):
     aud: AudDTO
 
 
-class UserUpdateDTO(UserBaseEmailDTO, UserBaseRoleDTO, UserBasePasswordDTO):
+class UserUpdateDTO(
+    UserBaseIdDTO, UserBaseEmailDTO, UserBaseRoleDTO, UserBasePasswordDTO
+):
     pass
 
 

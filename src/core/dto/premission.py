@@ -15,3 +15,7 @@ class PremissionUpdateDTO(PremissionBaseNameDTO):
 
 class PremissionFullDTO(PremissionBaseIdDTO, PremissionBaseNameDTO):
     pass
+
+
+class PremissionCreateDTO(PremissionBaseNameDTO):
+    pass
