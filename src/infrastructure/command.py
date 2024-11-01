@@ -1,7 +1,9 @@
-from typing import get_type_hints, TypeVar, Generic, Protocol
 from collections.abc import Callable
-from src.core.cqrs.command import CommandType
+from typing import Generic, Protocol, TypeVar, get_type_hints
+
 from pydantic import BaseModel
+
+from src.core.cqrs.command import CommandType
 
 TDto = TypeVar("TDto", bound=BaseModel, contravariant=True)
 

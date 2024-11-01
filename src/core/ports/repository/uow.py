@@ -1,6 +1,7 @@
-from typing import Protocol, Any
-from src.core.ports.repository import CommandRepositoryType
 from abc import abstractmethod
+from typing import Any, Protocol
+
+from src.core.ports.repository import CommandRepositoryType
 
 
 class UnitOfWorkInterface(Protocol):

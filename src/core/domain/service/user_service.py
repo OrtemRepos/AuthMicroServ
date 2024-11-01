@@ -1,6 +1,6 @@
-from src.core.domain.entities.value_objects import ID
 from src.core.domain.entities.aggregates.user_aggregate import UserAggregate
-from src.core.ports.repository import QueryRepositoryType, CommandRepositoryType
+from src.core.domain.entities.value_objects import ID
+from src.core.ports.repository import CommandRepositoryType, QueryRepositoryType
 from src.infrastructure.executor import ExecutorInterface
 
 

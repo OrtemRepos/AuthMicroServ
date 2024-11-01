@@ -3,8 +3,9 @@ from .repository import (
     AioQueryRepository,
     SyncCommandRepository,
     SyncQueryRepository,
+    TIn,
+    TOut,
 )
-
 
 type CommandRepositoryType[T] = SyncCommandRepository[T] | AioCommandRepository[T]
 type QueryRepositoryType[T] = SyncQueryRepository[T] | AioQueryRepository[T]
@@ -16,4 +17,6 @@ __all__ = [
     "AioQueryRepository",
     "SyncCommandRepository",
     "SyncQueryRepository",
+    "TIn",
+    "TOut",
 ]

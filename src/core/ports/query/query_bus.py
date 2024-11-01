@@ -1,7 +1,8 @@
-from src.infrastructure.query import QueryRouter
-from src.core.cqrs.query import QueryType
-from typing import Protocol, Any
 from abc import abstractmethod
+from typing import Any, Protocol
+
+from src.core.cqrs.query import QueryType
+from src.infrastructure.query import QueryRouter
 
 
 class QueryBus(Protocol[QueryType]):

@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Protocol, TypeVar
 
-from src.core.domain.entities.value_objects import ID
 from src.core.domain.entities import DomainEntityType
+from src.core.domain.entities.value_objects import ID
 
 TOut = TypeVar("TOut", covariant=True, bound=DomainEntityType)
 TIn = TypeVar("TIn", contravariant=True, bound=DomainEntityType)
@@ -38,7 +38,7 @@ class SyncCommandRepository(Protocol[TIn]):
         pass
 
     @abstractmethod
-    def delete(self, entity_id: TIn):
+    def delete(self, entity_id: ID):
         pass
 
 

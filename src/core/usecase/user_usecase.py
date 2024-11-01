@@ -6,10 +6,10 @@ from src.core.domain.entities import User
 from src.core.domain.entities.aggregates import UserAggregate
 from src.core.domain.service import UserService
 from src.core.dto.user import (
-    UserBaseIdDTO,
     UserBaseEmailDTO,
-    UserUpdateDTO,
+    UserBaseIdDTO,
     UserFullDTO,
+    UserUpdateDTO,
 )
 
 

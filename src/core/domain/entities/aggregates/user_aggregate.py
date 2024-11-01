@@ -1,15 +1,16 @@
 import bcrypt
 
-from src.core.domain.entities.user import User
 from src.core.domain.entities.aggregates import BaseAggregate
+from src.core.domain.entities.user import User
 
 
-class UserAggregate(BaseAggregate):
+class UserAggregate(BaseAggregate[User]):
     def __init__(self, user: User):
         self.user_id = user.id
         self.email = user.email
         self.hashed_password = user.hashed_password
         self.role_ids = user.role_ids
+        self.entity = user
 
     def add_role(self, role_id: int):
         self.role_ids.add(role_id)
@@ -28,3 +29,8 @@ class UserAggregate(BaseAggregate):
 
     def validate_role(self, role_id: int) -> bool:
         return role_id in self.role_ids
+
+    @classmethod
+    def model_validate(cls, data: dict) -> "UserAggregate":
+        entity = User(**data)
+        return cls(entity)

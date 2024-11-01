@@ -1,8 +1,9 @@
-from typing import get_type_hints, TypeVar, Generic, Protocol
 from collections.abc import Callable
-from src.core.cqrs.query import QueryType
+from typing import Generic, Protocol, TypeVar, get_type_hints
+
 from pydantic import BaseModel
 
+from src.core.cqrs.query import QueryType
 
 TDtoInput = TypeVar("TDtoInput", bound=BaseModel, contravariant=True)
 TDtoOut = TypeVar("TDtoOut", bound=BaseModel, covariant=True)

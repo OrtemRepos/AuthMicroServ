@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, SecretStr
+
+from src.core.domain.entities.token_entity import RefreshToken
 from src.core.domain.entities.value_objects import ID, AccsesToken
-from src.core.domain.entities import RefreshToken
 
 
 class UserBaseIdDTO(BaseModel):

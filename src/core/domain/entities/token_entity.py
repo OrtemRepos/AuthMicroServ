@@ -1,7 +1,9 @@
-from pydantic import Field
 import secrets
-from src.core.domain.entities.entity import Entity
+
+from pydantic import Field
+
 from src.config import JWTsettings
+from src.core.domain.entities.entity import Entity
 
 
 class RefreshToken(Entity):

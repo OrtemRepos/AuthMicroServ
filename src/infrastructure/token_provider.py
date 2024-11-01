@@ -1,16 +1,18 @@
-import jwt
 import secrets
-from typing import Protocol
 from abc import abstractmethod
-from uuid import UUID
 from time import time
+from typing import Protocol
+from uuid import UUID
+
+import jwt
+
 from src.config import JWTsettings
+from src.core.domain.entities import RefreshToken
 from src.core.domain.entities.value_objects import (
     ID,
     AccsesToken,
     TokenPayload,
 )
-from src.core.domain.entities import RefreshToken
 
 
 class TokenProviderInterface(Protocol):

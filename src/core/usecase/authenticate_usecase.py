@@ -1,4 +1,5 @@
 from abc import ABC
+
 from src.core.domain.service import AuthService
 from src.core.dto import AuthTokenDTO, UserAuthDTO, UserRefreshTokenUpdatedDTO
 

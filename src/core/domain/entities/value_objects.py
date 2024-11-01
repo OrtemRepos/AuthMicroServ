@@ -1,5 +1,6 @@
 import socket
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 
 type ID = UUID | int

@@ -1,4 +1,5 @@
 from typing import Any, Protocol
+
 from src.core.cqrs.command import CommandType
 from src.core.cqrs.query import QueryType
 

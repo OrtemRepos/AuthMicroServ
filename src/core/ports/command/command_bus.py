@@ -1,7 +1,8 @@
-from src.infrastructure.command import CommandRouter
-from src.core.cqrs.command import CommandType
-from typing import Protocol
 from abc import abstractmethod
+from typing import Protocol
+
+from src.core.cqrs.command import CommandType
+from src.infrastructure.command import CommandRouter
 
 
 class CommandBus(Protocol[CommandType]):

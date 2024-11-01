@@ -5,9 +5,9 @@ from typing import Any
 from src.core.domain.entities import Premission
 from src.core.domain.service import PremissionService
 from src.core.dto.premission import (
-    PremissionFullDTO,
     PremissionBaseIdDTO,
     PremissionBaseNameDTO,
+    PremissionFullDTO,
     PremissionUpdateDTO,
 )
 

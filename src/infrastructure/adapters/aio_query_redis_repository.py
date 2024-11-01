@@ -1,9 +1,9 @@
-from src.core.domain.entities import RefreshToken
-from src.core.ports.repository import AioQueryRepository
-from src.config import RedisSettings
-from src.core.domain.entities.value_objects import ID
-
 import redis.asyncio as redis
+
+from src.config import RedisSettings
+from src.core.domain.entities import RefreshToken
+from src.core.domain.entities.value_objects import ID
+from src.core.ports.repository import AioQueryRepository
 
 
 class QueryRedisRepository(AioQueryRepository[RefreshToken]):
@@ -13,7 +13,7 @@ class QueryRedisRepository(AioQueryRepository[RefreshToken]):
 
     async def get_by_id(self, entity_id: ID) -> RefreshToken:
         result = await self._client.get(str(entity_id))
-        entity = RefreshToken.model_validate(result)
+        entity = RefreshToken(id=entity_id, token=result)
         return entity
 
     async def get_by_name(self, name: str) -> RefreshToken:

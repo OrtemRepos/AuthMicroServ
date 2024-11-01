@@ -2,13 +2,13 @@ from abc import ABC
 from functools import singledispatchmethod
 from typing import Any
 
-from src.core.domain.entities.aggregates import RoleAggregate
 from src.core.domain.entities import Role
+from src.core.domain.entities.aggregates import RoleAggregate
 from src.core.domain.service import RoleService
 from src.core.dto import (
-    RoleFullDTO,
     RoleBaseIdDTO,
     RoleBaseNameDTO,
+    RoleFullDTO,
     RoleUpdateDTO,
 )
 

@@ -1,31 +1,31 @@
-from typing import Protocol
 from abc import abstractmethod
+from typing import Protocol
+
+from pydantic import BaseModel
+
 from src.core.cqrs.command import CreateCommand, DeleteCommand, UpdateCommand
 from src.core.cqrs.query import (
-    GetByIdQuery,
-    GetByNameQuery,
     AuthWithPasswordQuery,
     AuthWithRefreshTokenQuery,
     AuthWithUpdateTokenQuery,
+    GetByIdQuery,
+    GetByNameQuery,
 )
-
 from src.core.dto import (
-    UserFullDTO,
-    UserBaseIdDTO,
-    UserUpdateDTO,
-    UserBaseEmailDTO,
-    RoleCreateDTO,
-    RoleBaseIdDTO,
-    RoleUpdateDTO,
-    RoleBaseNameDTO,
-    PremissionCreateDTO,
-    PremissionBaseIdDTO,
-    PremissionUpdateDTO,
-    PremissionBaseNameDTO,
     AuthTokenDTO,
+    PremissionBaseIdDTO,
+    PremissionBaseNameDTO,
+    PremissionCreateDTO,
+    PremissionUpdateDTO,
+    RoleBaseIdDTO,
+    RoleBaseNameDTO,
+    RoleCreateDTO,
+    RoleUpdateDTO,
+    UserBaseEmailDTO,
+    UserBaseIdDTO,
+    UserFullDTO,
+    UserUpdateDTO,
 )
-
-from pydantic import BaseModel
 
 
 class RestApiInterface(Protocol):

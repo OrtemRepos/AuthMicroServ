@@ -1,5 +1,6 @@
-from src.core.domain.entities.entity import Entity
 from pydantic import Field
+
+from src.core.domain.entities.entity import Entity
 
 
 class Premission(Entity):

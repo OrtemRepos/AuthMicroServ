@@ -1,9 +1,9 @@
-from src.core.ports.repository import AioCommandRepository
-from src.core.domain.entities.value_objects import ID
-from src.core.domain.entities import RefreshToken
-from src.config import RedisSettings
-
 import redis.asyncio as redis
+
+from src.config import RedisSettings
+from src.core.domain.entities import RefreshToken
+from src.core.domain.entities.value_objects import ID
+from src.core.ports.repository import AioCommandRepository
 
 
 class CommandRedisRepository(AioCommandRepository[RefreshToken]):
