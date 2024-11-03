@@ -2,10 +2,21 @@ from abc import abstractmethod
 from typing import Protocol
 
 from src.core.cqrs.command import CommandType
-from src.infrastructure.command import CommandRouter
+from src.infrastructure.command import CommandRouter, HandlerFuncType
 
 
-class CommandBus(Protocol[CommandType]):
+class WorkerInterface:
+    async def start(self):
+        pass
+
+    async def stop(self):
+        pass
+
+    async def _worker_loop(self):
+        pass
+
+
+class CommandBus(Protocol):
     router: CommandRouter
 
     @abstractmethod
@@ -13,5 +24,11 @@ class CommandBus(Protocol[CommandType]):
         pass
 
     @abstractmethod
-    async def dispatch(self, command: CommandType) -> None:
+    async def publish(self, event: CommandType) -> None:
+        pass
+
+    @abstractmethod
+    def subscribe(
+        self, event_type: type[CommandType], handlers: list[HandlerFuncType]
+    ) -> bool:
         pass

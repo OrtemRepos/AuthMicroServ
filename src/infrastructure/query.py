@@ -7,7 +7,6 @@ from src.core.cqrs.query import QueryType
 
 TDtoInput = TypeVar("TDtoInput", bound=BaseModel, contravariant=True)
 TDtoOut = TypeVar("TDtoOut", bound=BaseModel, covariant=True)
-type DTO = BaseModel
 
 
 class Handler(Protocol[TDtoOut, TDtoInput]):
@@ -15,22 +14,26 @@ class Handler(Protocol[TDtoOut, TDtoInput]):
         pass
 
 
-HandlerFuncType = Callable[[TDtoInput], TDtoOut] | Handler
+type HandlerFuncType[TDtoInput, TDtoOut] = Callable[[TDtoInput], TDtoOut] | Handler
 
 
-class QueryRouter(Generic[QueryType, TDtoInput, TDtoOut]):
+class QueryRouter(Generic[TDtoInput, TDtoOut]):
     def __init__(self) -> None:
         self._handlers: dict[QueryType, list[HandlerFuncType]] = {}
 
-    def register(
-        self, handle_query: QueryType, handlers: list[HandlerFuncType]
+    def register[TDtoInput, TDtoOut](
+        self,
+        handle_query: QueryType,
+        handlers: list[HandlerFuncType[TDtoInput, TDtoOut]],
     ) -> None:
         if handle_query not in self._handlers:
             self._handlers[handle_query] = []
         self._handlers[handle_query].extend(handlers)
 
     @staticmethod
-    def check_type(query: QueryType, handler: HandlerFuncType) -> bool:
+    def check_type[TDtoInput, TDtoOut](
+        query: QueryType, handler: HandlerFuncType[TDtoInput, TDtoOut]
+    ) -> bool:
         query_items = query.__dict__
 
         if callable(handler):
@@ -55,7 +58,9 @@ class QueryRouter(Generic[QueryType, TDtoInput, TDtoOut]):
             return False
         return True
 
-    async def execute(self, query: QueryType, dto_output: DTO) -> DTO:
+    async def execute[TDtoOut: BaseModel](
+        self, query: QueryType, dto_output
+    ) -> TDtoOut:
         handlers = self._handlers.get(query)
         if handlers is None:
             raise TypeError(

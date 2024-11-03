@@ -5,7 +5,7 @@ from concurrent.futures import Executor, ThreadPoolExecutor
 from functools import singledispatchmethod
 from typing import Generic, TypeVar
 
-from src.core.domain.entities import DomainEntityType
+from src.core.domain.entities.aggregates import DomainEntityType
 
 TDomain = TypeVar("TDomain", bound=DomainEntityType)
 

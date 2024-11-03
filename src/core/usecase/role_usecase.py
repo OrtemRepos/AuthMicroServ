@@ -46,7 +46,10 @@ class GetRoleUsecase(BaseRoleUsecase):
     async def __call__(
         self, dto: RoleBaseIdDTO | RoleBaseNameDTO, dto_out: Any
     ) -> None:
-        pass
+        raise TypeError(
+            f'Argument "dto" have incompatible type "{type(dto)}"'
+            f'Expected "{self.__annotations__["dto"]}"'
+        )
 
     @__call__.register
     async def _(self, dto: RoleBaseIdDTO, dto_out: Any) -> Any:

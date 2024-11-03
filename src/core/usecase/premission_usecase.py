@@ -46,7 +46,7 @@ class GetPremissionUsecase(BasePremissionUsecase):
         premission_id: PremissionBaseIdDTO | PremissionBaseNameDTO,
         dto: Any,
     ) -> None:
-        pass
+        raise TypeError("Expected")
 
     @__call__.register
     async def _(self, premission_id: PremissionBaseIdDTO, dto: Any) -> Any:

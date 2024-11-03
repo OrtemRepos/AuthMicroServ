@@ -5,7 +5,7 @@ from src.core.cqrs.query import QueryType
 from src.infrastructure.query import QueryRouter
 
 
-class QueryBus(Protocol[QueryType]):
+class QueryBus(Protocol):
     router: QueryRouter
 
     @abstractmethod

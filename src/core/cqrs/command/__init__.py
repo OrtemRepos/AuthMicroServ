@@ -1,12 +1,9 @@
-from typing import TypeVar
-
 from .command import (
-    BaseCommand,
     CreateCommand,
     UpdateCommand,
     DeleteCommand,
 )
 
-CommandType = TypeVar("CommandType", bound=BaseCommand, contravariant=True)
+type CommandType = CreateCommand | UpdateCommand | DeleteCommand
 
 __all__ = ["CreateCommand", "UpdateCommand", "DeleteCommand"]

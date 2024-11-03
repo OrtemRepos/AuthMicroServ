@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import Union
 
 from .query import (
     BaseQuery,
@@ -9,7 +9,13 @@ from .query import (
     AuthWithRefreshTokenQuery,
 )
 
-QueryType = TypeVar("QueryType", bound=BaseQuery, contravariant=True)
+type QueryType = Union[
+    GetByIdQuery,
+    GetByNameQuery,
+    AuthWithPasswordQuery,
+    AuthWithUpdateTokenQuery,
+    AuthWithRefreshTokenQuery,
+]
 
 __all__ = [
     "BaseQuery",

@@ -1,6 +1,5 @@
 from abc import ABC
 from pydantic import BaseModel
-from typing import TypeVar, Generic
 from src.core.dto import (
     NameDTO,
     IdDTO,
@@ -9,20 +8,17 @@ from src.core.dto import (
     UserRefreshTokenUpdatedDTO,
 )
 
-NameT = TypeVar("NameT", bound=NameDTO)
-IdT = TypeVar("IdT", bound=IdDTO)
-
 
 class BaseQuery(BaseModel, ABC):
     pass
 
 
-class GetByIdQuery(BaseQuery, Generic[IdT]):
-    dto: IdT
+class GetByIdQuery(BaseQuery):
+    dto: IdDTO
 
 
-class GetByNameQuery(BaseQuery, Generic[NameT]):
-    dto: NameT
+class GetByNameQuery(BaseQuery):
+    dto: NameDTO
 
 
 class AuthWithPasswordQuery(BaseQuery):

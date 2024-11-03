@@ -11,93 +11,79 @@ from src.core.cqrs.query import (
     GetByIdQuery,
     GetByNameQuery,
 )
-from src.core.dto import (
-    AuthTokenDTO,
-    PremissionBaseIdDTO,
-    PremissionBaseNameDTO,
-    PremissionCreateDTO,
-    PremissionUpdateDTO,
-    RoleBaseIdDTO,
-    RoleBaseNameDTO,
-    RoleCreateDTO,
-    RoleUpdateDTO,
-    UserBaseEmailDTO,
-    UserBaseIdDTO,
-    UserFullDTO,
-    UserUpdateDTO,
-)
+from src.core.dto import AuthTokenDTO
 
 
 class RestApiInterface(Protocol):
     @abstractmethod
-    async def create_user(self, command: CreateCommand[UserFullDTO]):
+    async def create_user(self, command: CreateCommand):
         pass
 
     @abstractmethod
-    async def delete_user(self, command: DeleteCommand[UserBaseIdDTO]):
+    async def delete_user(self, command: DeleteCommand):
         pass
 
     @abstractmethod
-    async def update_user(self, command: UpdateCommand[UserUpdateDTO]):
+    async def update_user(self, command: UpdateCommand):
         pass
 
     @abstractmethod
     async def get_user_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery[UserBaseIdDTO], dto_output: type[DTOOut]
+        self, query: GetByIdQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
     @abstractmethod
     async def get_user_by_email[DTOOut: BaseModel](
-        self, query: GetByNameQuery[UserBaseEmailDTO], dto_output: type[DTOOut]
+        self, query: GetByNameQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
     @abstractmethod
-    async def create_role(self, command: CreateCommand[RoleCreateDTO]):
+    async def create_role(self, command: CreateCommand):
         pass
 
     @abstractmethod
-    async def delete_role(self, command: DeleteCommand[RoleBaseIdDTO]):
+    async def delete_role(self, command: DeleteCommand):
         pass
 
     @abstractmethod
-    async def update_role(self, command: UpdateCommand[RoleUpdateDTO]):
+    async def update_role(self, command: UpdateCommand):
         pass
 
     @abstractmethod
     async def get_role_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery[RoleBaseIdDTO], dto_output: type[DTOOut]
+        self, query: GetByIdQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
     @abstractmethod
     async def get_role_by_name[DTOOut: BaseModel](
-        self, query: GetByNameQuery[RoleBaseNameDTO], dto_output: type[DTOOut]
+        self, query: GetByNameQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
     @abstractmethod
-    async def create_premission(self, command: CreateCommand[PremissionCreateDTO]):
+    async def create_premission(self, command: CreateCommand):
         pass
 
     @abstractmethod
-    async def delete_premission(self, command: DeleteCommand[PremissionBaseIdDTO]):
+    async def delete_premission(self, command: DeleteCommand):
         pass
 
     @abstractmethod
-    async def update_premission(self, command: UpdateCommand[PremissionUpdateDTO]):
+    async def update_premission(self, command: UpdateCommand):
         pass
 
     @abstractmethod
     async def get_premission_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery[PremissionBaseIdDTO], dto_output: type[DTOOut]
+        self, query: GetByIdQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
     @abstractmethod
     async def get_premission_by_name[DTOOut: BaseModel](
-        self, query: GetByNameQuery[PremissionBaseNameDTO], dto_output: type[DTOOut]
+        self, query: GetByNameQuery, dto_output: type[DTOOut]
     ) -> DTOOut:
         pass
 
