@@ -14,7 +14,7 @@ class Handler(Protocol[TDto]):
         pass
 
 
-type HandlerFuncType[TDto] = Callable[[TDto], None] | Handler
+type HandlerFuncType[TDto] = Callable[[TDto], None] | Handler[TDto]
 
 
 class CommandRouter:
@@ -23,7 +23,7 @@ class CommandRouter:
     ) -> None:
         self._handlers: dict[type[CommandType], list[HandlerFuncType]] = handlers
 
-    def register[TDto](
+    def register(
         self, handle_command: type[CommandType], handlers: list[HandlerFuncType[TDto]]
     ) -> bool:
         if handle_command not in self._handlers:
@@ -34,7 +34,7 @@ class CommandRouter:
         return True
 
     @staticmethod
-    def check_type[TDto](command: CommandType, handler: HandlerFuncType[TDto]) -> bool:
+    def check_type(command: CommandType, handler: HandlerFuncType[TDto]) -> bool:
         command_items = command.__dict__
 
         if callable(handler):
