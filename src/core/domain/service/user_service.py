@@ -1,6 +1,9 @@
 from src.core.domain.entities.aggregates.user_aggregate import UserAggregate
 from src.core.domain.entities.value_objects import ID
-from src.core.ports.repository import CommandRepositoryType, QueryRepositoryType
+from src.core.ports.repository import (
+    CommandRepositoryType,
+    QueryRepositoryType,
+)
 from src.infrastructure.executor import ExecutorInterface
 
 
@@ -44,7 +47,9 @@ class UserService:
         raise ValueError("User credentials are not valid")
 
     async def delete_user(self, user_id: ID) -> None:
-        await self.executor.execute(self.user_command_repository.delete, user_id)
+        await self.executor.execute(
+            self.user_command_repository.delete, user_id
+        )
 
     async def create_user(self, new_user: UserAggregate) -> None:
         await self.executor.execute(self.user_command_repository.add, new_user)

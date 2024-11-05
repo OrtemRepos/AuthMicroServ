@@ -1,6 +1,9 @@
 from src.core.domain.entities import Premission
 from src.core.domain.entities.value_objects import ID
-from src.core.ports.repository import CommandRepositoryType, QueryRepositoryType
+from src.core.ports.repository import (
+    CommandRepositoryType,
+    QueryRepositoryType,
+)
 from src.infrastructure.executor import ExecutorInterface
 
 

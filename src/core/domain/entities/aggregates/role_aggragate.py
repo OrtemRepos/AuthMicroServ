@@ -12,11 +12,9 @@ class RoleAggregate(BaseAggregate[Role]):
 
     def role_validate(self, role: RoleFullDTO) -> bool:
         validate_predicate = (
-            True
-            if self.role_id == role.role_id
+            self.role_id == role.role_id
             and self.name == role.name
             and self.premission_ids
-            else False
         )
         return validate_predicate
 

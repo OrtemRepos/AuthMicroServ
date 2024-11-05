@@ -7,7 +7,9 @@ from .repository import (
     TOut,
 )
 
-type CommandRepositoryType[T] = SyncCommandRepository[T] | AioCommandRepository[T]
+type CommandRepositoryType[T] = (
+    SyncCommandRepository[T] | AioCommandRepository[T]
+)
 type QueryRepositoryType[T] = SyncQueryRepository[T] | AioQueryRepository[T]
 
 __all__ = [

@@ -1,10 +1,9 @@
 import asyncio
-
 from typing import Generic
+
 from loguru import logger
 
-from src.core.ports.event_bus import WorkerInterface, RouterType
-
+from src.core.ports.event_bus import RouterType, WorkerInterface
 
 
 class Worker(WorkerInterface, Generic[RouterType]):
@@ -42,7 +41,9 @@ class Worker(WorkerInterface, Generic[RouterType]):
     @retry_timeout.setter
     def retry_timeout(self, value: int):
         if value < 0:
-            logger.warning('"retry_timeout" must be greater than or equal to 0.')
+            logger.warning(
+                '"retry_timeout" must be greater than or equal to 0.'
+            )
             self._retry_timeout = 0
         self._retry_timeout = value
 
@@ -54,7 +55,8 @@ class Worker(WorkerInterface, Generic[RouterType]):
     def name(self, value: str):
         if self._is_running:
             logger.warning(
-                f"You can not change the name of worker {self._name} while it is running."
+                f"You can not change the name of worker {self._name}"
+                "while it is running."
             )
             return
         self._name = value
@@ -82,7 +84,9 @@ class Worker(WorkerInterface, Generic[RouterType]):
             return
         self._is_running = True
         self._task = asyncio.create_task(self._worker_loop())
-        logger.info(f"[{self.__class__.__name__}]\tWorker {self._name} started")
+        logger.info(
+            f"[{self.__class__.__name__}]\tWorker {self._name} started"
+        )
 
     def stop(self):
         if self._task and self._is_running:
@@ -104,12 +108,14 @@ class Worker(WorkerInterface, Generic[RouterType]):
                 except Exception as e:
                     retry_counter += 1
                     logger.exception(
-                        f"[{self.__class__.__name__}]\tException in worker {self._name}.\nTry:\t{retry_counter}",
+                        f"[{self.__class__.__name__}]\tException in worker "
+                        f"{self._name}.\nTry:\t{retry_counter}",
                         e,
                     )
                     await asyncio.sleep(self._retry_timeout)
             if retry_counter == self._retry:
                 logger.error(
-                    f"[{self.__class__.__name__}]\tMax retries exceeded for command {event} in worker {self._name}"
+                    f"[{self.__class__.__name__}]\tMax retries exceeded for "
+                    f"command {event} in worker {self._name}"
                 )
             self._queue.task_done()

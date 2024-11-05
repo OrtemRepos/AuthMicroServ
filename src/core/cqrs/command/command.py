@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
 from abc import ABC
 
-from src.core.dto import UpdateDTO, IdDTO, CreateDTO
+from pydantic import BaseModel, Field
+
+from src.core.dto import CreateDTO, IdDTO, UpdateDTO
 
 
 class BaseCommand(BaseModel, ABC):

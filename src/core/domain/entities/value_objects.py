@@ -20,7 +20,13 @@ class TokenPayload(ValueObject):
         examples=["auth-serv-127.0.0.1"],
         description="Issuer",
     )
-    sub: str = Field(examples=["user-1", "user-2", "user-3"], description="Subject")
+    sub: str = Field(
+        examples=["user-1", "user-2", "user-3"], description="Subject"
+    )
     aud: str = Field(examples=["127.0.0.1"], description="Audience server")
-    exp: int = Field(examples=[3600], description="Expiration time in milliseconds")
-    roles: set[int] = Field(examples=["admin", "user"], description="List of roles")
+    exp: int = Field(
+        examples=[3600], description="Expiration time in milliseconds"
+    )
+    roles: set[int] = Field(
+        examples=["admin", "user"], description="List of roles"
+    )

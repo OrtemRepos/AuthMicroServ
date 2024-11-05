@@ -1,4 +1,5 @@
-from abc import ABC
+from abc import ABC, abstractclassmethod
+from typing import Any
 
 from src.core.domain.service import AuthService
 from src.core.dto import AuthTokenDTO, UserAuthDTO, UserRefreshTokenUpdatedDTO
@@ -7,6 +8,10 @@ from src.core.dto import AuthTokenDTO, UserAuthDTO, UserRefreshTokenUpdatedDTO
 class BaseAuthUsecase(ABC):
     def __init__(self, auth_service: AuthService) -> None:
         self.auth_service = auth_service
+
+    @abstractclassmethod
+    async def __call__(self, dto: Any) -> Any:
+        pass
 
 
 class AuthUserWithPassword(BaseAuthUsecase):

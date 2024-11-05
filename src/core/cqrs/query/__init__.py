@@ -1,21 +1,19 @@
-from typing import Union
-
 from .query import (
+    AuthWithPasswordQuery,
+    AuthWithRefreshTokenQuery,
+    AuthWithUpdateTokenQuery,
     BaseQuery,
     GetByIdQuery,
     GetByNameQuery,
-    AuthWithPasswordQuery,
-    AuthWithUpdateTokenQuery,
-    AuthWithRefreshTokenQuery,
 )
 
-type QueryType = Union[
-    GetByIdQuery,
-    GetByNameQuery,
-    AuthWithPasswordQuery,
-    AuthWithUpdateTokenQuery,
-    AuthWithRefreshTokenQuery,
-]
+type QueryType = (
+    GetByIdQuery
+    | GetByNameQuery
+    | AuthWithPasswordQuery
+    | AuthWithUpdateTokenQuery
+    | AuthWithRefreshTokenQuery
+)
 
 __all__ = [
     "BaseQuery",

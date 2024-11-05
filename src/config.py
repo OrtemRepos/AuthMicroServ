@@ -24,7 +24,9 @@ class RedisSettings(BaseSettings):
 
 class Settings(BaseSettings):
     jwt_settings: JWTsettings = JWTsettings()
-    thread_poll_settings: ThreadPoolExecutorSettings = ThreadPoolExecutorSettings()
+    thread_poll_settings: ThreadPoolExecutorSettings = (
+        ThreadPoolExecutorSettings()
+    )
     ltu_cache: LruCacheRouter = LruCacheRouter()
 
 

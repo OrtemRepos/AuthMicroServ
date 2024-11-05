@@ -1,4 +1,5 @@
-from typing import Any, Coroutine
+from collections.abc import Coroutine
+from typing import Any
 from uuid import UUID
 
 from src.core.domain.entities import RefreshToken
@@ -7,7 +8,10 @@ from src.core.domain.entities.value_objects import (
     AccsesToken,
     TokenPayload,
 )
-from src.core.ports.repository import CommandRepositoryType, QueryRepositoryType
+from src.core.ports.repository import (
+    CommandRepositoryType,
+    QueryRepositoryType,
+)
 from src.infrastructure.executor import ExecutorInterface
 from src.infrastructure.token_provider import TokenProviderInterface
 
@@ -33,7 +37,9 @@ class TokenService:
             return result
         raise ValueError(f"Not valid {token_id=}")
 
-    async def get_refresh_token_by_token(self, token: RefreshToken) -> RefreshToken:
+    async def get_refresh_token_by_token(
+        self, token: RefreshToken
+    ) -> RefreshToken:
         result = await self.executor.execute(
             self.token_repository_query.get_by_name, token
         )
@@ -42,17 +48,21 @@ class TokenService:
         raise ValueError(f"Not valid {token=}")
 
     async def set_refresh_token(self, user_id: ID) -> RefreshToken:
-        refresh_token: RefreshToken = self.token_provider.generate_refresh_token(
-            user_id
+        refresh_token: RefreshToken = (
+            self.token_provider.generate_refresh_token(user_id)
         )
-        await self.executor.execute(self.token_repository_command.update, refresh_token)
+        await self.executor.execute(
+            self.token_repository_command.update, refresh_token
+        )
         return refresh_token
 
     async def create_refresh_token(self, user_id: ID) -> RefreshToken:
-        refresh_token: RefreshToken = self.token_provider.generate_refresh_token(
-            user_id
+        refresh_token: RefreshToken = (
+            self.token_provider.generate_refresh_token(user_id)
         )
-        await self.executor.execute(self.token_repository_command.add, refresh_token)
+        await self.executor.execute(
+            self.token_repository_command.add, refresh_token
+        )
         return refresh_token
 
     def decode_accses_token(self, token: AccsesToken) -> TokenPayload:
@@ -72,7 +82,9 @@ class TokenService:
         new_accses_token = self.create_accses_token(
             user_id=UUID(payload.sub), aud=payload.aud, role_ids=payload.roles
         )
-        new_refresh_token = self.create_refresh_token(user_id=UUID(payload.sub))
+        new_refresh_token = self.create_refresh_token(
+            user_id=UUID(payload.sub)
+        )
         return new_accses_token, new_refresh_token
 
     async def delete_refresh_token(self, user_id: ID):

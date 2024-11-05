@@ -1,10 +1,12 @@
 from abc import ABC
+
 from pydantic import BaseModel
+
 from src.core.dto import (
-    NameDTO,
-    IdDTO,
-    UserAuthDTO,
     AuthTokenDTO,
+    IdDTO,
+    NameDTO,
+    UserAuthDTO,
     UserRefreshTokenUpdatedDTO,
 )
 

@@ -7,13 +7,18 @@ from loguru import logger
 from src.core.cqrs.command import CommandType
 from src.core.cqrs.query import QueryType
 from src.infrastructure.command import CommandRouter
-from src.infrastructure.command import HandlerFuncType as HandlerFuncCommandType
+from src.infrastructure.command import (
+    HandlerFuncType as HandlerFuncCommandType,
+)
 from src.infrastructure.query import HandlerFuncType as HandlerFuncQueryType
 from src.infrastructure.query import QueryRouter
 
 RouterType = TypeVar("RouterType", CommandRouter, QueryRouter)
-HandlerFuncType = TypeVar("HandlerFuncType", bound=HandlerFuncQueryType | HandlerFuncCommandType)
+HandlerFuncType = TypeVar(
+    "HandlerFuncType", bound=HandlerFuncQueryType | HandlerFuncCommandType
+)
 EventType = TypeVar("EventType", CommandType, QueryType, contravariant=True)
+
 
 class WorkerInterface(Protocol):
     async def start(self):
@@ -26,14 +31,7 @@ class WorkerInterface(Protocol):
         pass
 
 
-
-class EventBusInterface(Protocol, Generic[RouterType, HandlerFuncType, EventType]):
-    router: RouterType
-
-    @abstractmethod
-    def __init__(self, command_router: RouterType) -> None:
-        pass
-
+class EventBusInterface(Protocol[EventType, HandlerFuncType]):
     @abstractmethod
     async def publish(self, event: EventType) -> None:
         pass
@@ -45,8 +43,9 @@ class EventBusInterface(Protocol, Generic[RouterType, HandlerFuncType, EventType
         pass
 
 
-
-class EventBusQueue(EventBusInterface[RouterType, HandlerFuncType, EventType], ABC):
+class EventBusQueue(
+    EventBusInterface, ABC, Generic[EventType, HandlerFuncType, RouterType]
+):
     def __init__(
         self,
         event_router: RouterType,
@@ -82,11 +81,10 @@ class EventBusQueue(EventBusInterface[RouterType, HandlerFuncType, EventType], A
             else:
                 str_for_log += " stopped"
             logger.warning(str_for_log, self._is_running)
-    
+
     @property
     def retry_num(self) -> int:
         return self._retry_num
-    
 
     @retry_num.setter
     def retry_num(self, value: int):
@@ -102,10 +100,11 @@ class EventBusQueue(EventBusInterface[RouterType, HandlerFuncType, EventType], A
     @retry_timeout.setter
     def retry_timeout(self, value: int):
         if value < 0:
-            logger.warning('"retry_timeout" must be greater than or equal to 0.')
+            logger.warning(
+                '"retry_timeout" must be greater than or equal to 0.'
+            )
             self._retry_timeout = 0
         self._retry_timeout = value
-    
 
     async def publish(self, event: EventType) -> None:
         if self._is_running:
@@ -125,8 +124,7 @@ class EventBusQueue(EventBusInterface[RouterType, HandlerFuncType, EventType], A
         retry_timeout: int | None = None,
     ) -> WorkerInterface:
         pass
-    
-    
+
     @abstractmethod
     def subscribe(
         self, event_type: type[EventType], handlers: list[HandlerFuncType]
@@ -151,5 +149,3 @@ class EventBusQueue(EventBusInterface[RouterType, HandlerFuncType, EventType], A
 
         for worker in self._workers:
             worker.stop()
-
-    

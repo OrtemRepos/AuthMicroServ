@@ -7,13 +7,15 @@ from src.core.ports.repository import AioCommandRepository
 
 
 class CommandRedisRepository(AioCommandRepository[RefreshToken]):
-    def __init__(self, client: redis.Redis, config: RedisSettings = RedisSettings()):
+    def __init__(self, client: redis.Redis, config: RedisSettings):
         self._client: redis.Redis = client
         self.config = config
 
     async def add(self, entity: RefreshToken):
         self._client.set(
-            str(entity.id), entity.token, ex=self.config.refresh_token_expire_ms
+            str(entity.id),
+            entity.token,
+            ex=self.config.refresh_token_expire_ms,
         )
 
     async def update(self, updated_entity: RefreshToken):

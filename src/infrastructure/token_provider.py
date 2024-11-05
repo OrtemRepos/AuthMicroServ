@@ -19,7 +19,9 @@ class TokenProviderInterface(Protocol):
     settings: JWTsettings
 
     @abstractmethod
-    def generate_token(self, user_id: ID, aud: str, role_ids: set[int]) -> AccsesToken:
+    def generate_token(
+        self, user_id: ID, aud: str, role_ids: set[int]
+    ) -> AccsesToken:
         pass
 
     @abstractmethod
@@ -50,7 +52,9 @@ class TokenProvider:
         self, user_id: UUID, aud: str, role_ids: set[int]
     ) -> AccsesToken:
         token = jwt.encode(
-            payload=self._generate_payload(user_id, aud, role_ids).model_dump(),
+            payload=self._generate_payload(
+                user_id, aud, role_ids
+            ).model_dump(),
             key=self.settings.secret_key,
             algorithm=self.settings.algorithms[0],
         )
@@ -58,7 +62,8 @@ class TokenProvider:
 
     def generate_refresh_token(self, user_id: ID) -> RefreshToken:
         return RefreshToken(
-            id=user_id, token=secrets.token_urlsafe(self.settings.refresh_token_size)
+            id=user_id,
+            token=secrets.token_urlsafe(self.settings.refresh_token_size),
         )
 
     def decode(self, token: AccsesToken) -> TokenPayload:

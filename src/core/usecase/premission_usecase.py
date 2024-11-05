@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractclassmethod
 from functools import singledispatchmethod
 from typing import Any
 
@@ -15,6 +15,10 @@ from src.core.dto.premission import (
 class BasePremissionUsecase(ABC):
     def __init__(self, premission_service: PremissionService) -> None:
         self.premission_service = premission_service
+
+    @abstractclassmethod
+    async def __call__(self, dto: Any) -> Any:
+        pass
 
 
 class CreatePremissionUsecase(BasePremissionUsecase):
@@ -58,6 +62,8 @@ class GetPremissionUsecase(BasePremissionUsecase):
 
     @__call__.register
     async def _(self, premission_id: PremissionBaseNameDTO, dto: Any) -> Any:
-        dto = await self.premission_service.get_premission_by_name(premission_id.name)
+        dto = await self.premission_service.get_premission_by_name(
+            premission_id.name
+        )
         premission_dto = dto.model_validate(dto, from_attributes=True)
         return premission_dto

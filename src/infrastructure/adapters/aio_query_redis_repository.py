@@ -7,7 +7,7 @@ from src.core.ports.repository import AioQueryRepository
 
 
 class QueryRedisRepository(AioQueryRepository[RefreshToken]):
-    def __init__(self, client: redis.Redis, config: RedisSettings = RedisSettings()):
+    def __init__(self, client: redis.Redis, config: RedisSettings):
         self.config = config
         self._client = client
 

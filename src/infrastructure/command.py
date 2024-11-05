@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 from src.core.cqrs.command import CommandType
 
-
 TDto = TypeVar("TDto", bound=BaseModel, contravariant=True)
 
 
@@ -19,12 +18,17 @@ type HandlerFuncType[TDto] = Callable[[TDto], None] | Handler[TDto]
 
 class CommandRouter:
     def __init__(
-        self, handlers: dict[type[CommandType], list[HandlerFuncType]] = {}
+        self,
+        handlers: dict[type[CommandType], list[HandlerFuncType]] | None = None,
     ) -> None:
-        self._handlers: dict[type[CommandType], list[HandlerFuncType]] = handlers
+        self._handlers: dict[type[CommandType], list[HandlerFuncType]] = (
+            {} or handlers
+        )
 
     def register(
-        self, handle_command: type[CommandType], handlers: list[HandlerFuncType[TDto]]
+        self,
+        handle_command: type[CommandType],
+        handlers: list[HandlerFuncType[TDto]],
     ) -> bool:
         if handle_command not in self._handlers:
             self._handlers[handle_command] = []
@@ -34,15 +38,19 @@ class CommandRouter:
         return True
 
     @staticmethod
-    def check_type(command: CommandType, handler: HandlerFuncType[TDto]) -> bool:
+    def check_type(
+        command: CommandType, handler: HandlerFuncType[TDto]
+    ) -> bool:
         command_items = command.__dict__
 
         if callable(handler):
             usecase_type_hints = get_type_hints(handler)
-        elif hasattr(handler, "__call__"):
+        elif callable(handler):
             usecase_type_hints = get_type_hints(handler.__call__)
         else:
-            raise TypeError(f"Not supporting handler {handler.__class__.__name__}")
+            raise TypeError(
+                f"Not supporting handler {handler.__class__.__name__}"
+            )
 
         usecase_type_hints.pop("return")
 
@@ -50,12 +58,12 @@ class CommandRouter:
             try:
                 if isinstance(command_items[k], v):
                     continue
-            except KeyError:
+            except KeyError as exc:
                 raise TypeError(
                     "Command dont have requires dto.\n"
                     f"DTO requires: \n\t{usecase_type_hints.values()}"
                     f"DTO got: \n\t{list(map(type, command_items.values()))}"
-                )
+                ) from exc
             return False
         return True
 

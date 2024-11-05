@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Generic, Protocol, TypeVar, get_type_hints
+from typing import Protocol, TypeVar, get_type_hints
 
 from pydantic import BaseModel
 
@@ -14,10 +14,12 @@ class Handler(Protocol[TDtoInput, TDtoOut]):
         pass
 
 
-type HandlerFuncType[TDtoInput, TDtoOut] = Callable[[TDtoInput], TDtoOut] | Handler[TDtoInput, TDtoOut]
+type HandlerFuncType[TDtoInput, TDtoOut] = (
+    Callable[[TDtoInput], TDtoOut] | Handler[TDtoInput, TDtoOut]
+)
 
 
-class QueryRouter(Generic[TDtoInput, TDtoOut]):
+class QueryRouter:
     def __init__(self) -> None:
         self._handlers: dict[type[QueryType], list[HandlerFuncType]] = {}
 
@@ -41,10 +43,12 @@ class QueryRouter(Generic[TDtoInput, TDtoOut]):
 
         if callable(handler):
             usecase_type_hints = get_type_hints(handler)
-        elif hasattr(handler, "__call__"):
+        elif callable(handler):
             usecase_type_hints = get_type_hints(handler.__call__)
         else:
-            raise TypeError(f"Not supporting handler {handler.__class__.__name__}")
+            raise TypeError(
+                f"Not supporting handler {handler.__class__.__name__}"
+            )
 
         usecase_type_hints.pop("return")
 
@@ -52,12 +56,12 @@ class QueryRouter(Generic[TDtoInput, TDtoOut]):
             try:
                 if isinstance(query_items[k], v):
                     continue
-            except KeyError:
+            except KeyError as exc:
                 raise TypeError(
                     "Query dont have requires dto.\n"
                     f"DTO requires: \n\t{usecase_type_hints.values()}"
                     f"DTO got: \n\t{list(map(type, query_items.values()))}"
-                )
+                ) from exc
             return False
         return True
 
@@ -74,4 +78,6 @@ class QueryRouter(Generic[TDtoInput, TDtoOut]):
             if self.check_type(query, handler):
                 result: TDtoOut = await handler(query.dto)
                 return dto_output.model_validate(result)
-        raise TypeError(f"Query {query.__class__.__name__} have unsupporting DTO type.")
+        raise TypeError(
+            f"Query {query.__class__.__name__} have unsupporting DTO type."
+        )

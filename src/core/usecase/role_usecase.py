@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractclassmethod
 from functools import singledispatchmethod
 from typing import Any
 
@@ -16,6 +16,10 @@ from src.core.dto import (
 class BaseRoleUsecase(ABC):
     def __init__(self, role_service: RoleService) -> None:
         self.role_service = role_service
+
+    @abstractclassmethod
+    async def __call__(self, dto: Any) -> Any:
+        pass
 
 
 class CreateRoleUsecase(BaseRoleUsecase):

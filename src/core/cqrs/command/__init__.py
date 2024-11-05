@@ -1,7 +1,7 @@
 from .command import (
     CreateCommand,
-    UpdateCommand,
     DeleteCommand,
+    UpdateCommand,
 )
 
 type CommandType = CreateCommand | UpdateCommand | DeleteCommand

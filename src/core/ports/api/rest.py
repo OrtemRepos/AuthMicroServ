@@ -88,7 +88,9 @@ class RestApiInterface(Protocol):
         pass
 
     @abstractmethod
-    async def auth_with_password(self, query: AuthWithPasswordQuery) -> AuthTokenDTO:
+    async def auth_with_password(
+        self, query: AuthWithPasswordQuery
+    ) -> AuthTokenDTO:
         pass
 
     @abstractmethod
@@ -98,5 +100,7 @@ class RestApiInterface(Protocol):
         pass
 
     @abstractmethod
-    async def auth_with_update(self, query: AuthWithUpdateTokenQuery) -> AuthTokenDTO:
+    async def auth_with_update(
+        self, query: AuthWithUpdateTokenQuery
+    ) -> AuthTokenDTO:
         pass
