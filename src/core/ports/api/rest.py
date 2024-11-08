@@ -14,7 +14,7 @@ from src.core.cqrs.query import (
 from src.core.dto import AuthTokenDTO
 
 
-class RestApiInterface(Protocol):
+class RestApiUserInterface(Protocol):
     @abstractmethod
     async def create_user(self, command: CreateCommand):
         pass
@@ -29,7 +29,7 @@ class RestApiInterface(Protocol):
 
     @abstractmethod
     async def get_user_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery, dto_output: type[DTOOut]
+        self, query: GetByIdQuery
     ) -> DTOOut:
         pass
 
@@ -39,6 +39,8 @@ class RestApiInterface(Protocol):
     ) -> DTOOut:
         pass
 
+
+class RestApiRoleInterface(Protocol):
     @abstractmethod
     async def create_role(self, command: CreateCommand):
         pass
@@ -63,6 +65,8 @@ class RestApiInterface(Protocol):
     ) -> DTOOut:
         pass
 
+
+class RestApiPremissionInterface(Protocol):
     @abstractmethod
     async def create_premission(self, command: CreateCommand):
         pass
@@ -77,7 +81,7 @@ class RestApiInterface(Protocol):
 
     @abstractmethod
     async def get_premission_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery, dto_output: type[DTOOut]
+        self, query: GetByIdQuery
     ) -> DTOOut:
         pass
 
@@ -87,6 +91,8 @@ class RestApiInterface(Protocol):
     ) -> DTOOut:
         pass
 
+
+class RestApiAuthInterface(Protocol):
     @abstractmethod
     async def auth_with_password(
         self, query: AuthWithPasswordQuery

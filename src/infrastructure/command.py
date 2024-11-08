@@ -22,7 +22,7 @@ class CommandRouter:
         handlers: dict[type[CommandType], list[HandlerFuncType]] | None = None,
     ) -> None:
         self._handlers: dict[type[CommandType], list[HandlerFuncType]] = (
-            {} or handlers
+            handlers or {}
         )
 
     def register(

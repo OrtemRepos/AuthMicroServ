@@ -31,13 +31,13 @@ class EventBusAdapter(EventBusInterface):
             raise TypeError(f"Expected {EventType}, but given {type(event)}")
 
     @singledispatchmethod
-    def override_subscribe(self, event_type: Any, handlers: list) -> bool:
+    def _override_subscribe(self, event_type: Any, handlers: list) -> bool:
         raise TypeError(
             f"Expected {EventType} and {list[HandlerFunc]},"
             f"but given {event_type} and {handlers}"
         )
 
-    @override_subscribe.register
+    @_override_subscribe.register
     def _(
         self,
         event_type: type[CommandType],
@@ -47,7 +47,7 @@ class EventBusAdapter(EventBusInterface):
             event_type=event_type, handlers=handlers
         )
 
-    @override_subscribe.register
+    @_override_subscribe.register
     def _(
         self, event_type: type[QueryType], handlers: list[HandlerFuncQueryType]
     ) -> bool:
@@ -58,4 +58,4 @@ class EventBusAdapter(EventBusInterface):
     def subscribe(
         self, event_type: type[EventType], handlers: list[HandlerFunc]
     ) -> bool:
-        return self.override_subscribe(event_type, handlers)
+        return self._override_subscribe(event_type, handlers)

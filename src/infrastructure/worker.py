@@ -1,5 +1,7 @@
 import asyncio
-from typing import Generic
+from collections.abc import Awaitable, Callable
+from typing import Any, Generic
+from uuid import UUID
 
 from loguru import logger
 
@@ -14,10 +16,12 @@ class Worker(WorkerInterface, Generic[RouterType]):
         queue: asyncio.Queue,
         retry_num: int,
         retry_timeout: int,
+        result_queue: asyncio.Queue | None = None,
     ) -> None:
         self._name = name
         self._route: RouterType = router
         self._queue = queue
+        self._result_queue = result_queue
         self._task: asyncio.Task | None = None
         self._is_running: bool = False
         self._retry = retry_num
@@ -97,13 +101,35 @@ class Worker(WorkerInterface, Generic[RouterType]):
                 f"[{self.__class__.__name__}]\tStopping worker {self._name}."
             )
 
+    def _get_event(
+        self,
+    ) -> (
+        Callable[[], Awaitable[tuple[UUID, Any]]]
+        | Callable[[], Awaitable[Any]]
+    ):
+        if self._result_queue:
+
+            async def _get():
+                id, event = await self._queue.get()
+                return id, event
+        else:
+
+            async def _get():
+                event = await self._queue.get()
+                return event
+
+        return _get
+
     async def _worker_loop(self):
+        event_getter = self._get_event()
         while self._is_running:
             retry_counter = 0
-            event = await self._queue.get()
+            event = await event_getter()
             while retry_counter < self._retry:
                 try:
-                    await self._router.execute(event)
+                    result = await self._router.execute(event)
+                    if result:
+                        self._result_queue.put((id, result))
                     break
                 except Exception as e:
                     retry_counter += 1

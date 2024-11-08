@@ -1,6 +1,6 @@
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Generic, Protocol, TypeVar
+from typing import Any, Generic, Protocol, TypeVar
 
 from loguru import logger
 
@@ -33,7 +33,7 @@ class WorkerInterface(Protocol):
 
 class EventBusInterface(Protocol[EventType, HandlerFuncType]):
     @abstractmethod
-    async def publish(self, event: EventType) -> None:
+    async def publish(self, event: EventType) -> Any:
         pass
 
     @abstractmethod
@@ -53,9 +53,11 @@ class EventBusQueue(
         worker_num: int,
         retry_num: int,
         retry_timeout: int,
+        result_queue: asyncio.Queue | None = None,
     ) -> None:
         self._event_router: RouterType = event_router
         self._queue = queue
+        self._result_queue = result_queue
         self._worker_num = worker_num
         self._retry_num = retry_num
         self._retry_timeout = retry_timeout
@@ -106,14 +108,9 @@ class EventBusQueue(
             self._retry_timeout = 0
         self._retry_timeout = value
 
-    async def publish(self, event: EventType) -> None:
-        if self._is_running:
-            await self._queue.put(event)
-        else:
-            logger.warning(
-                f"[{self.__class__.__name__}]\tPooling stop right now",
-                self._is_running,
-            )
+    @abstractmethod
+    async def publish(self, event: EventType) -> Any:
+        pass
 
     @abstractmethod
     def _create_worker(

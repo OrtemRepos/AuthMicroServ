@@ -11,7 +11,7 @@ class RoleAggregate(BaseAggregate[Role]):
         self.entity = role
 
     def role_validate(self, role: RoleFullDTO) -> bool:
-        validate_predicate = (
+        validate_predicate = bool(
             self.role_id == role.role_id
             and self.name == role.name
             and self.premission_ids

@@ -1,4 +1,3 @@
-from abc import ABC, abstractclassmethod
 from functools import singledispatchmethod
 from typing import Any
 
@@ -13,13 +12,9 @@ from src.core.dto.user import (
 )
 
 
-class BaseUserUsecase(ABC):
+class BaseUserUsecase:
     def __init__(self, user_service: UserService) -> None:
         self.user_service = user_service
-
-    @abstractclassmethod
-    async def __call__(self, dto: Any) -> Any:
-        pass
 
 
 class CreateUserUsecase(BaseUserUsecase):
