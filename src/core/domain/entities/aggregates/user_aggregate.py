@@ -2,6 +2,7 @@ import bcrypt
 
 from src.core.domain.entities.aggregates import BaseAggregate
 from src.core.domain.entities.user import User
+from src.core.dto.user import UserDTO
 
 
 class UserAggregate(BaseAggregate[User]):
@@ -34,3 +35,16 @@ class UserAggregate(BaseAggregate[User]):
     def model_validate(cls, data: dict) -> "UserAggregate":
         entity = User(**data)
         return cls(entity)
+
+    @classmethod
+    def from_dto(cls, dto: UserDTO) -> "UserAggregate":
+        entity = User(
+            id=dto.user_id,  # type: ignore
+            email=dto.email,  # type: ignore
+            hashed_password=dto.hashed_password,  # type: ignore
+            role_ids=dto.role_ids,  # type: ignore
+        )
+        return cls(entity)
+
+    def to_dto(self) -> UserDTO:
+        return UserDTO.model_validate(self, from_attributes=True)

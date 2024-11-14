@@ -1,15 +1,6 @@
-from functools import singledispatchmethod
-from typing import Any
-
-from src.core.domain.entities import Role
 from src.core.domain.entities.aggregates import RoleAggregate
 from src.core.domain.service import RoleService
-from src.core.dto import (
-    RoleBaseIdDTO,
-    RoleBaseNameDTO,
-    RoleFullDTO,
-    RoleUpdateDTO,
-)
+from src.core.dto import RoleDTO
 
 
 class BaseRoleUsecase:
@@ -18,46 +9,32 @@ class BaseRoleUsecase:
 
 
 class CreateRoleUsecase(BaseRoleUsecase):
-    async def __call__(self, dto: RoleFullDTO) -> None:
-        role_entity = Role(
-            id=dto.role_id, name=dto.name, permission_ids=dto.premission_ids
-        )
-        role_aggregate = RoleAggregate(role_entity)
+    async def __call__(self, dto: RoleDTO) -> None:
+        role_aggregate = RoleAggregate.from_dto(dto)
         await self.role_service.create_role(role_aggregate)
 
 
 class DeleteRoleUsecase(BaseRoleUsecase):
-    async def __call__(self, dto: RoleBaseIdDTO) -> None:
+    async def __call__(self, dto: RoleDTO) -> None:
         await self.role_service.delete_role(dto.role_id)
 
 
 class UpdateRoleUsecase(BaseRoleUsecase):
-    async def __call__(self, dto: RoleUpdateDTO) -> None:
-        role_entity = Role(
-            id=dto.role_id, name=dto.name, permission_ids=dto.premission_ids
-        )
-        updated_aggregate = RoleAggregate(role_entity)
+    async def __call__(self, dto: RoleDTO) -> None:
+        updated_aggregate = RoleAggregate.from_dto(dto)
         await self.role_service.update_role(updated_aggregate)
 
 
 class GetRoleUsecase(BaseRoleUsecase):
-    @singledispatchmethod
-    async def __call__(
-        self, dto: RoleBaseIdDTO | RoleBaseNameDTO, dto_out: Any
-    ) -> None:
-        raise TypeError(
-            f'Argument "dto" have incompatible type "{type(dto)}"'
-            f'Expected "{self.__annotations__["dto"]}"'
-        )
-
-    @__call__.register
-    async def _(self, dto: RoleBaseIdDTO, dto_out: Any) -> Any:
-        dto_out = await self.role_service.get_role_by_id(dto.role_id)
-        role_dto = dto_out.model_validate(dto_out, from_attributes=True)
-        return role_dto
-
-    @__call__.register
-    async def _(self, dto: RoleBaseNameDTO, dto_out: Any) -> Any:
-        dto_out = await self.role_service.get_role_by_name(dto.name)
-        role_dto = dto_out.model_validate(dto_out, from_attributes=True)
-        return role_dto
+    async def __call__(self, dto: RoleDTO) -> RoleDTO:
+        if dto.role_id is not None:
+            aggregate = await self.role_service.get_role_by_id(dto.role_id)
+            return aggregate.to_dto()
+        elif dto.name is not None:
+            aggregate = await self.role_service.get_role_by_name(dto.name)
+            return aggregate.to_dto()
+        else:
+            raise TypeError(
+                f'Argument "dto" have incompatible type "{type(dto)}"'
+                f'Expected "{self.__annotations__["dto"]}"'
+            )

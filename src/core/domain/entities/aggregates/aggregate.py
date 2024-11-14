@@ -13,7 +13,7 @@ class Aggregate(Protocol[EntityType]):
         pass
 
     @abstractmethod
-    def to_dto(self, dto_type: Any) -> Any:
+    def to_dto(self) -> Any:
         pass
 
     @abstractmethod
@@ -27,12 +27,14 @@ class BaseAggregate(Aggregate[EntityType], ABC):
     def __init__(self, *args, **kwargs):
         pass
 
+    @abstractmethod
     @classmethod
     def from_dto(cls, dto: Any) -> "BaseAggregate":
-        return cls(**dto)
+        pass
 
-    def to_dto(self, dto_type: Any) -> Any:
-        return dto_type.model_validate(self, from_attributes=True)
+    @abstractmethod
+    def to_dto(self) -> Any:
+        pass
 
     def to_entity(self) -> EntityType:
         return self.entity

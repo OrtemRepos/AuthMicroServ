@@ -1,15 +1,6 @@
-from functools import singledispatchmethod
-from typing import Any
-
-from src.core.domain.entities import User
 from src.core.domain.entities.aggregates import UserAggregate
 from src.core.domain.service import UserService
-from src.core.dto.user import (
-    UserBaseEmailDTO,
-    UserBaseIdDTO,
-    UserFullDTO,
-    UserUpdateDTO,
-)
+from src.core.dto.user import UserDTO
 
 
 class BaseUserUsecase:
@@ -18,49 +9,33 @@ class BaseUserUsecase:
 
 
 class CreateUserUsecase(BaseUserUsecase):
-    async def __call__(self, dto: UserFullDTO) -> None:
-        user_entity = User(
-            id=dto.user_id,
-            email=dto.email,
-            hashed_password=dto.hashed_password,
-            role_ids=dto.role_ids,
-        )
-        user_aggregate = UserAggregate(user_entity)
+    async def __call__(self, dto: UserDTO) -> None:
+        user_aggregate = UserAggregate.from_dto(dto)
         await self.user_service.create_user(user_aggregate)
 
 
 class DeleteUserUsecase(BaseUserUsecase):
-    async def __call__(self, dto: UserBaseIdDTO) -> None:
-        await self.user_service.delete_user(dto.user_id)
+    async def __call__(self, dto: UserDTO) -> None:
+        if dto.user_id is not None:
+            await self.user_service.delete_user(dto.user_id)
 
 
 class UpdateUserUsecase(BaseUserUsecase):
-    async def __call__(self, dto: UserUpdateDTO) -> None:
-        user_entity = User(
-            id=dto.user_id,
-            email=dto.email,
-            hashed_password=dto.hashed_password,
-            role_ids=dto.role_ids,
-        )
-        updated_aggregate = UserAggregate(user_entity)
-        await self.user_service.update_user(updated_aggregate)
+    async def __call__(self, dto: UserDTO) -> None:
+        user_aggregate = UserAggregate.from_dto(dto)
+        await self.user_service.update_user(user_aggregate)
 
 
 class GetUserUsecase(BaseUserUsecase):
-    @singledispatchmethod
-    async def __call__(
-        self, dto: UserBaseEmailDTO | UserBaseIdDTO, dto_output: Any
-    ) -> None:
-        pass
-
-    @__call__.register
-    async def _(self, dto: UserBaseIdDTO, dto_output: Any) -> Any:
-        user = await self.user_service.get_user_by_id(dto.user_id)
-        user_dto = dto_output.model_validate(user, from_attributes=True)
-        return user_dto
-
-    @__call__.register
-    async def _(self, dto: UserBaseEmailDTO, dto_output: Any) -> Any:
-        user = await self.user_service.get_user_by_email(dto.email)
-        user_dto = dto_output.model_validate(user, from_attributes=True)
-        return user_dto
+    async def __call__(self, dto: UserDTO) -> UserDTO:
+        if dto.user_id is not None:
+            aggregate = await self.user_service.get_user_by_id(dto.user_id)
+            return aggregate.to_dto()
+        elif dto.email is not None:
+            aggregate = await self.user_service.get_user_by_email(dto.email)
+            return aggregate.to_dto()
+        else:
+            raise TypeError(
+                f'Argument "dto" have incompatible type "{type(dto)}"'
+                f'Expected "{self.__annotations__["dto"]}"'
+            )

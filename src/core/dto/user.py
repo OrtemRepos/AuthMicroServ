@@ -1,54 +1,40 @@
-from pydantic import BaseModel, EmailStr, Field, SecretStr
+from enum import StrEnum
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, SecretStr
 
 from src.core.domain.entities.token_entity import RefreshToken
 from src.core.domain.entities.value_objects import ID, AccsesToken
 
 
-class UserBaseIdDTO(BaseModel):
-    user_id: ID = Field(description="User ID (UUID by default)")
+class UserDTO(BaseModel):
+    user_id: ID | None = Field(description="User ID (UUID by default)")
+    email: EmailStr | None = None
+    role_ids: set[int] | None = None
+    hashed_password: str | None = None
+
+    model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 
-class UserBaseEmailDTO(BaseModel):
+class UserFieldEnum(StrEnum):
+    USER_ID = "user_id"
+    EMAIL = "email"
+    ROLE_IDS = "role_ids"
+    HASHED_PASSWORD = "hashed_password"
+
+
+class UserAuthDTO(BaseModel):
     email: EmailStr
-
-
-class UserBaseRoleDTO(BaseModel):
-    role_ids: set[int] = Field(description="Set with user roles id (int)")
-
-
-class UserBasePasswordDTO(BaseModel):
-    hashed_password: str
-
-
-class UserFullDTO(
-    UserBaseIdDTO, UserBaseEmailDTO, UserBaseRoleDTO, UserBasePasswordDTO
-):
-    pass
-
-
-class AudDTO(BaseModel):
+    password: SecretStr
     aud: str
 
 
-class UserAuthDTO(UserBaseEmailDTO):
-    password: SecretStr
-    aud: AudDTO
-
-
-class UserUpdateDTO(
-    UserBaseIdDTO, UserBaseEmailDTO, UserBaseRoleDTO, UserBasePasswordDTO
-):
-    pass
-
-
-class UserAuthWithTokenDTO(UserBaseIdDTO):
+class UserAuthTokenDTO(BaseModel):
+    user_id: ID
     accses_token: AccsesToken
+    refresh_token: RefreshToken | None
 
 
-class UserRefreshTokenUpdatedDTO(UserBaseIdDTO):
+class UserRefreshTokenUpdatedDTO(BaseModel):
+    user_id: ID
     refresh_token: RefreshToken
-    aud: AudDTO
-
-
-class UserRefreshTokenDTO(UserAuthWithTokenDTO):
-    refresh_token: RefreshToken
+    aud: str

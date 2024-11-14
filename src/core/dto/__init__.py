@@ -1,60 +1,26 @@
-from .premission import (
-    PremissionBaseIdDTO,
-    PremissionBaseNameDTO,
-    PremissionCreateDTO,
-    PremissionFullDTO,
-    PremissionUpdateDTO,
-)
-from .role import (
-    RoleBaseIdDTO,
-    RoleBaseNameDTO,
-    RoleCreateDTO,
-    RoleFullDTO,
-    RolePremissionBaseDTO,
-    RoleUpdateDTO,
-)
+from .premission import PremissionDTO
+from .role import RoleDTO
 from .token_dto import AuthTokenDTO
 from .user import (
     UserAuthDTO,
-    UserAuthWithTokenDTO,
-    UserBaseEmailDTO,
-    UserBaseIdDTO,
-    UserBasePasswordDTO,
-    UserBaseRoleDTO,
-    UserFullDTO,
-    UserRefreshTokenDTO,
+    UserAuthTokenDTO,
+    UserDTO,
+    UserFieldEnum,
     UserRefreshTokenUpdatedDTO,
-    UserUpdateDTO,
 )
 
-type NameDTO = UserBaseEmailDTO | RoleBaseNameDTO | PremissionBaseNameDTO
-type FullDTO = UserFullDTO | RoleFullDTO | PremissionFullDTO
-type CreateDTO = UserFullDTO | RoleCreateDTO | PremissionCreateDTO
-type IdDTO = UserBaseIdDTO | RoleBaseIdDTO | PremissionBaseIdDTO
-type UpdateDTO = UserUpdateDTO | RoleUpdateDTO | PremissionUpdateDTO
+type DtoType = UserDTO | RoleDTO | PremissionDTO
+type AuthDTO = (
+    UserAuthDTO | UserAuthTokenDTO | UserRefreshTokenUpdatedDTO | AuthTokenDTO
+)
 
 __all__ = [
-    "UserBaseIdDTO",
-    "UserBaseEmailDTO",
-    "UserBaseRoleDTO",
-    "UserBasePasswordDTO",
-    "UserFullDTO",
+    "UserDTO",
     "UserAuthDTO",
-    "UserUpdateDTO",
-    "UserAuthWithTokenDTO",
-    "UserRefreshTokenDTO",
+    "UserAuthTokenDTO",
     "UserRefreshTokenUpdatedDTO",
-    "UserBaseDTO",
-    "RoleBaseIdDTO",
-    "RolePremissionBaseDTO",
-    "RoleBaseNameDTO",
-    "RoleFullDTO",
-    "RoleUpdateDTO",
-    "RoleBaseDTO",
-    "PremissionBaseIdDTO",
-    "PremissionBaseNameDTO",
-    "PremissionUpdateDTO",
-    "PremissionFullDTO",
-    "PremissionBaseDTO",
+    "RoleDTO",
+    "PremissionDTO",
     "AuthTokenDTO",
+    "UserFieldEnum",
 ]

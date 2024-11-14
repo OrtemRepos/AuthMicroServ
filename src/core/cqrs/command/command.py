@@ -1,21 +1,24 @@
 from abc import ABC
+from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-from src.core.dto import CreateDTO, IdDTO, UpdateDTO
+from src.core.dto import DtoType
+
+DTO = TypeVar("DTO", bound=DtoType)
 
 
 class BaseCommand(BaseModel, ABC):
     pass
 
 
-class CreateCommand(BaseCommand):
-    dto: CreateDTO = Field(description="DTO of new entity")
+class CreateCommand(BaseCommand, Generic[DTO]):
+    dto: DTO = Field(description="DTO of new entity")
 
 
-class UpdateCommand(BaseCommand):
-    dto: UpdateDTO = Field(description="Updated DTO")
+class UpdateCommand(BaseCommand, Generic[DTO]):
+    dto: DTO = Field(description="Updated DTO")
 
 
-class DeleteCommand(BaseCommand):
-    dto: IdDTO = Field(description="DTO with ID entity")
+class DeleteCommand(BaseCommand, Generic[DTO]):
+    dto: DTO = Field(description="DTO with ID entity")

@@ -25,7 +25,7 @@ class CommandBus(EventBusQueue[CommandType, HandlerFuncType, CommandRouter]):
         return self._event_router.register(event_type, handlers)
 
     async def publish(self, event: CommandType) -> None:
-        self._queue.put(event)
+        await self._queue.put(event)
 
     def _create_worker(
         self,

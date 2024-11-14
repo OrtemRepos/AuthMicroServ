@@ -1,21 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class PremissionBaseIdDTO(BaseModel):
+class PremissionDTO(BaseModel):
     premission_id: int
+    name: str | None = None
 
-
-class PremissionBaseNameDTO(BaseModel):
-    name: str
-
-
-class PremissionUpdateDTO(PremissionBaseNameDTO):
-    pass
-
-
-class PremissionFullDTO(PremissionBaseIdDTO, PremissionBaseNameDTO):
-    pass
-
-
-class PremissionCreateDTO(PremissionBaseNameDTO):
-    pass
+    model_config = ConfigDict(from_attributes=True, extra="ignore")

@@ -57,7 +57,6 @@ class EventBusQueue(
     ) -> None:
         self._event_router: RouterType = event_router
         self._queue = queue
-        self._result_queue = result_queue
         self._worker_num = worker_num
         self._retry_num = retry_num
         self._retry_timeout = retry_timeout

@@ -1,25 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class RoleBaseIdDTO(BaseModel):
+class RoleDTO(BaseModel):
     role_id: int
-
-
-class RolePremissionBaseDTO(BaseModel):
-    premission_ids: set[int]
-
-
-class RoleBaseNameDTO(BaseModel):
     name: str
+    premission_ids: set[int] | None = None
 
-
-class RoleFullDTO(RoleBaseIdDTO, RolePremissionBaseDTO, RoleBaseNameDTO):
-    pass
-
-
-class RoleCreateDTO(RolePremissionBaseDTO, RoleBaseNameDTO):
-    pass
-
-
-class RoleUpdateDTO(RoleFullDTO):
-    pass
+    model_config = ConfigDict(from_attributes=True, extra="ignore")

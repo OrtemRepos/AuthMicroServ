@@ -1,94 +1,91 @@
 from abc import abstractmethod
 from typing import Protocol
-
-from pydantic import BaseModel
+from uuid import UUID
 
 from src.core.cqrs.command import CreateCommand, DeleteCommand, UpdateCommand
 from src.core.cqrs.query import (
     AuthWithPasswordQuery,
     AuthWithRefreshTokenQuery,
     AuthWithUpdateTokenQuery,
-    GetByIdQuery,
-    GetByNameQuery,
 )
-from src.core.dto import AuthTokenDTO
+from src.core.dto import AuthTokenDTO, PremissionDTO, RoleDTO, UserDTO
 
 
 class RestApiUserInterface(Protocol):
     @abstractmethod
-    async def create_user(self, command: CreateCommand):
+    async def create_user(self, command: CreateCommand[UserDTO]):
         pass
 
     @abstractmethod
-    async def delete_user(self, command: DeleteCommand):
+    async def delete_user(self, command: DeleteCommand[UserDTO]):
         pass
 
     @abstractmethod
-    async def update_user(self, command: UpdateCommand):
+    async def update_user(self, command: UpdateCommand[UserDTO]):
         pass
 
     @abstractmethod
-    async def get_user_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery
-    ) -> DTOOut:
+    async def get_user_by_id(
+        self, user_id: UUID, dto_output: set[str]
+    ) -> UserDTO:
         pass
 
     @abstractmethod
-    async def get_user_by_email[DTOOut: BaseModel](
-        self, query: GetByNameQuery, dto_output: type[DTOOut]
-    ) -> DTOOut:
+    async def get_user_by_email(
+        self, user_name: str, dto_output: set[str]
+    ) -> UserDTO:
         pass
 
 
 class RestApiRoleInterface(Protocol):
     @abstractmethod
-    async def create_role(self, command: CreateCommand):
+    async def create_role(self, command: CreateCommand[RoleDTO]):
         pass
 
     @abstractmethod
-    async def delete_role(self, command: DeleteCommand):
+    async def delete_role(self, command: DeleteCommand[RoleDTO]):
         pass
 
     @abstractmethod
-    async def update_role(self, command: UpdateCommand):
+    async def update_role(self, command: UpdateCommand[RoleDTO]):
         pass
 
     @abstractmethod
-    async def get_role_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery, dto_output: type[DTOOut]
-    ) -> DTOOut:
+    async def get_role_by_id(
+        self, role_id: int, dto_output: set[str]
+    ) -> RoleDTO:
         pass
 
     @abstractmethod
-    async def get_role_by_name[DTOOut: BaseModel](
-        self, query: GetByNameQuery, dto_output: type[DTOOut]
-    ) -> DTOOut:
+    async def get_role_by_name(
+        self, role_name: str, dto_output: set[str]
+    ) -> RoleDTO:
         pass
 
 
 class RestApiPremissionInterface(Protocol):
     @abstractmethod
-    async def create_premission(self, command: CreateCommand):
+    async def create_premission(self, command: CreateCommand[PremissionDTO]):
         pass
 
     @abstractmethod
-    async def delete_premission(self, command: DeleteCommand):
+    async def delete_premission(self, command: DeleteCommand[PremissionDTO]):
         pass
 
     @abstractmethod
-    async def update_premission(self, command: UpdateCommand):
+    async def update_premission(self, command: UpdateCommand[PremissionDTO]):
         pass
 
     @abstractmethod
-    async def get_premission_by_id[DTOOut: BaseModel](
-        self, query: GetByIdQuery
-    ) -> DTOOut:
+    async def get_premission_by_id(
+        self, premission_id: int, dto_output: set[str]
+    ) -> PremissionDTO:
         pass
 
     @abstractmethod
-    async def get_premission_by_name[DTOOut: BaseModel](
-        self, query: GetByNameQuery, dto_output: type[DTOOut]
-    ) -> DTOOut:
+    async def get_premission_by_name(
+        self, premission_name: str, dto_output: set[str]
+    ) -> PremissionDTO:
         pass
 
 

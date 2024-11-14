@@ -1,6 +1,6 @@
 from src.core.domain.entities import Role
 from src.core.domain.entities.aggregates import BaseAggregate
-from src.core.dto.role import RoleFullDTO
+from src.core.dto.role import RoleDTO
 
 
 class RoleAggregate(BaseAggregate[Role]):
@@ -10,7 +10,7 @@ class RoleAggregate(BaseAggregate[Role]):
         self.premission_ids = role.permission_ids
         self.entity = role
 
-    def role_validate(self, role: RoleFullDTO) -> bool:
+    def role_validate(self, role: RoleDTO) -> bool:
         validate_predicate = bool(
             self.role_id == role.role_id
             and self.name == role.name
@@ -31,3 +31,19 @@ class RoleAggregate(BaseAggregate[Role]):
     def model_validate(cls, data: dict) -> "RoleAggregate":
         entity = Role(**data)
         return cls(entity)
+
+    @classmethod
+    def from_dto(cls, dto: RoleDTO) -> "RoleAggregate":
+        entity = Role(
+            id=dto.role_id,  # type: ignore
+            name=dto.name,  # type: ignore
+            permission_ids=dto.premission_ids,  # type: ignore
+        )
+        return cls(entity)
+
+    def to_dto(self) -> RoleDTO:
+        return RoleDTO(
+            role_id=self.role_id,
+            name=self.name,
+            premission_ids=self.premission_ids,
+        )

@@ -10,7 +10,7 @@ class BaseAuthUsecase:
 class AuthUserWithPassword(BaseAuthUsecase):
     async def __call__(self, dto: UserAuthDTO) -> AuthTokenDTO:
         dto_out = await self.auth_service.auth_user_with_password_and_email(
-            dto.email, dto.password.get_secret_value(), dto.aud.aud
+            dto.email, dto.password.get_secret_value(), dto.aud
         )
         return AuthTokenDTO.model_validate(dto_out)
 
@@ -28,6 +28,6 @@ class AuthUserWithRefreshTokenUsecase(BaseAuthUsecase):
 class AuthUserWithUpdateRoleUsecase(BaseAuthUsecase):
     async def __call__(self, dto: UserRefreshTokenUpdatedDTO) -> AuthTokenDTO:
         dto_out = await self.auth_service.update_token_with_refresh_token(
-            dto.user_id, dto.refresh_token, dto.aud.aud
+            dto.user_id, dto.refresh_token, dto.aud
         )
         return AuthTokenDTO.model_validate(dto_out)
