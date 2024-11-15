@@ -7,12 +7,19 @@ from src.core.domain.entities.value_objects import ID, AccsesToken
 
 
 class UserDTO(BaseModel):
-    user_id: ID | None = Field(description="User ID (UUID by default)")
+    user_id: ID | None = Field(
+        default=None, description="User ID (UUID by default)"
+    )
     email: EmailStr | None = None
     role_ids: set[int] | None = None
     hashed_password: str | None = None
 
     model_config = ConfigDict(from_attributes=True, extra="ignore")
+
+
+class UserCreateDTO(BaseModel):
+    email: EmailStr
+    password: SecretStr
 
 
 class UserFieldEnum(StrEnum):

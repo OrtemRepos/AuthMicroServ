@@ -2,22 +2,31 @@ from abc import abstractmethod
 from typing import Protocol
 from uuid import UUID
 
-from src.core.cqrs.command import CreateCommand, DeleteCommand, UpdateCommand
+from src.core.cqrs.command import CreateCommand, UpdateCommand
 from src.core.cqrs.query import (
     AuthWithPasswordQuery,
     AuthWithRefreshTokenQuery,
     AuthWithUpdateTokenQuery,
 )
-from src.core.dto import AuthTokenDTO, PremissionDTO, RoleDTO, UserDTO
+from src.core.dto import (
+    AuthTokenDTO,
+    PremissionCreateDTO,
+    PremissionDTO,
+    RoleCreateDTO,
+    RoleDTO,
+    UserCreateDTO,
+    UserDTO,
+    UserFieldEnum,
+)
 
 
 class RestApiUserInterface(Protocol):
     @abstractmethod
-    async def create_user(self, command: CreateCommand[UserDTO]):
+    async def create_user(self, command: CreateCommand[UserCreateDTO]):
         pass
 
     @abstractmethod
-    async def delete_user(self, command: DeleteCommand[UserDTO]):
+    async def delete_user(self, user_id: UUID):
         pass
 
     @abstractmethod
@@ -26,24 +35,24 @@ class RestApiUserInterface(Protocol):
 
     @abstractmethod
     async def get_user_by_id(
-        self, user_id: UUID, dto_output: set[str]
+        self, user_id: UUID, dto_output: set[UserFieldEnum]
     ) -> UserDTO:
         pass
 
     @abstractmethod
     async def get_user_by_email(
-        self, user_name: str, dto_output: set[str]
+        self, user_name: str, dto_output: set[UserFieldEnum]
     ) -> UserDTO:
         pass
 
 
 class RestApiRoleInterface(Protocol):
     @abstractmethod
-    async def create_role(self, command: CreateCommand[RoleDTO]):
+    async def create_role(self, command: CreateCommand[RoleCreateDTO]):
         pass
 
     @abstractmethod
-    async def delete_role(self, command: DeleteCommand[RoleDTO]):
+    async def delete_role(self, role_id: int):
         pass
 
     @abstractmethod
@@ -65,11 +74,13 @@ class RestApiRoleInterface(Protocol):
 
 class RestApiPremissionInterface(Protocol):
     @abstractmethod
-    async def create_premission(self, command: CreateCommand[PremissionDTO]):
+    async def create_premission(
+        self, command: CreateCommand[PremissionCreateDTO]
+    ):
         pass
 
     @abstractmethod
-    async def delete_premission(self, command: DeleteCommand[PremissionDTO]):
+    async def delete_premission(self, premission_id: int):
         pass
 
     @abstractmethod

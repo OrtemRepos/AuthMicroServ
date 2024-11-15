@@ -16,7 +16,9 @@ class CreateRoleUsecase(BaseRoleUsecase):
 
 class DeleteRoleUsecase(BaseRoleUsecase):
     async def __call__(self, dto: RoleDTO) -> None:
-        await self.role_service.delete_role(dto.role_id)
+        if dto.role_id is not None:
+            await self.role_service.delete_role(dto.role_id)
+        raise TypeError("Not valid dto")
 
 
 class UpdateRoleUsecase(BaseRoleUsecase):

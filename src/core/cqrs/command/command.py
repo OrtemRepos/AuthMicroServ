@@ -3,22 +3,23 @@ from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-from src.core.dto import DtoType
+from src.core.dto import TypeCreateDTO, TypeDTO
 
-DTO = TypeVar("DTO", bound=DtoType)
+OutDTO = TypeVar("OutDTO", bound=TypeDTO)
+CreateDTO = TypeVar("CreateDTO", bound=TypeCreateDTO)
 
 
 class BaseCommand(BaseModel, ABC):
     pass
 
 
-class CreateCommand(BaseCommand, Generic[DTO]):
-    dto: DTO = Field(description="DTO of new entity")
+class CreateCommand(BaseCommand, Generic[CreateDTO]):
+    dto: CreateDTO = Field(description="DTO of new entity")
 
 
-class UpdateCommand(BaseCommand, Generic[DTO]):
-    dto: DTO = Field(description="Updated DTO")
+class UpdateCommand(BaseCommand, Generic[OutDTO]):
+    dto: OutDTO = Field(description="Updated DTO")
 
 
-class DeleteCommand(BaseCommand, Generic[DTO]):
-    dto: DTO = Field(description="DTO with ID entity")
+class DeleteCommand(BaseCommand, Generic[OutDTO]):
+    dto: OutDTO = Field(description="DTO with ID entity")

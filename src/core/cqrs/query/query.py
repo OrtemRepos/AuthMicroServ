@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from src.core.dto import (
     AuthTokenDTO,
-    DtoType,
+    TypeDTO,
     UserAuthDTO,
     UserRefreshTokenUpdatedDTO,
 )
@@ -14,7 +14,7 @@ class BaseQuery(BaseModel, ABC):
     pass
 
 
-class GetByIdQuery[IdType: DtoType](BaseQuery):
+class GetByIdQuery[IdType: TypeDTO](BaseQuery):
     dto: IdType
 
     def __init__(self, **data):
@@ -26,7 +26,7 @@ class GetByIdQuery[IdType: DtoType](BaseQuery):
             raise ValueError("Id not found")
 
 
-class GetByNameQuery[NameType: DtoType](BaseQuery):
+class GetByNameQuery[NameType: TypeDTO](BaseQuery):
     dto: NameType
 
 

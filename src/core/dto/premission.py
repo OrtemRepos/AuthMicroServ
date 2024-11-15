@@ -6,3 +6,7 @@ class PremissionDTO(BaseModel):
     name: str | None = None
 
     model_config = ConfigDict(from_attributes=True, extra="ignore")
+
+
+class PremissionCreateDTO(BaseModel):
+    name: str

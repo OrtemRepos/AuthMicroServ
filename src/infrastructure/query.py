@@ -4,19 +4,19 @@ from typing import Protocol, TypeVar, get_type_hints
 from pydantic import BaseModel
 
 from src.core.cqrs.query import QueryType
-from src.core.domain.entities.aggregates import DomainEntityType
+from src.core.dto import TypeDTO
 
 TDtoInput = TypeVar("TDtoInput", bound=BaseModel, contravariant=True)
-EntityType = TypeVar("EntityType", bound=DomainEntityType, covariant=True)
+DTO = TypeVar("DTO", bound=TypeDTO, covariant=True)
 
 
-class Handler(Protocol[TDtoInput, EntityType]):
-    def __call__(self, dto: TDtoInput) -> EntityType:
+class Handler(Protocol[TDtoInput, DTO]):
+    def __call__(self, dto: TDtoInput) -> DTO:
         pass
 
 
-type HandlerFuncType[TDtoInput: BaseModel, EntityType: DomainEntityType] = (
-    Callable[[TDtoInput], EntityType] | Handler[TDtoInput, EntityType]
+type HandlerFuncType[TDtoInput: BaseModel, TypeDTO: TypeDTO] = (
+    Callable[[TDtoInput], TypeDTO] | Handler[TDtoInput, TypeDTO]
 )
 
 
@@ -27,7 +27,7 @@ class QueryRouter:
     def register(
         self,
         handle_query: type[QueryType],
-        handlers: list[HandlerFuncType[TDtoInput, EntityType]],
+        handlers: list[HandlerFuncType[TDtoInput, DTO]],
     ) -> bool:
         if handle_query not in self._handlers:
             self._handlers[handle_query] = []
@@ -38,7 +38,7 @@ class QueryRouter:
 
     @staticmethod
     def check_type(
-        query: QueryType, handler: HandlerFuncType[TDtoInput, EntityType]
+        query: QueryType, handler: HandlerFuncType[TDtoInput, DTO]
     ) -> bool:
         query_items = query.__dict__
 
@@ -66,9 +66,7 @@ class QueryRouter:
             return False
         return True
 
-    async def execute[EntityType: DomainEntityType](
-        self, query: QueryType
-    ) -> EntityType:
+    async def execute[DTO: (TypeDTO)](self, query: QueryType) -> DTO:
         handlers = self._handlers.get(type(query))
         if handlers is None:
             raise TypeError(
@@ -77,7 +75,7 @@ class QueryRouter:
             )
         for handler in handlers:
             if self.check_type(query, handler):
-                result: EntityType = await handler(query.dto)
+                result: DTO = await handler(query.dto)
                 return result
         raise TypeError(
             f"Query {query.__class__.__name__} have unsupporting DTO type."
